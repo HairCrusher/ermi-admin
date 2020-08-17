@@ -1,0 +1,27 @@
+<nz-table #productTable [nzData]="products">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr
+      *ngFor="let product of productTable.data"
+      (click)="router.navigate([product.id], {relativeTo: activatedRoute})"
+    >
+      <td>{{product.id}}</td>
+      <td>{{product.name}}</td>
+      <td>{{product.desc}}</td>
+      <td>
+        <button
+          nz-button
+          type="button"
+          (click)="router.navigate([product.id, 'edit'], {relativeTo: activatedRoute})"
+        ><fa-icon [icon]="icons.faEdit"></fa-icon>Edit</button>
+      </td>
+    </tr>
+  </tbody>
+</nz-table>

@@ -1,0 +1,13 @@
+:host {
+  & > nz-layout {
+    height: 100vh;
+  }
+  ::ng-deep .ant-layout-header {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+nz-content {
+  padding: 10px;
+}

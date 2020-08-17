@@ -1,0 +1,19 @@
+<form nz-form nzLayout="vertical" [formGroup]="form" (ngSubmit)="submit()">
+  <nz-form-item>
+    <nz-form-label nzRequired>Name</nz-form-label>
+    <nz-form-control nzErrorTip="Required field">
+      <input nz-input type="text" formControlName="name">
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired>Type</nz-form-label>
+    <nz-form-control nzErrorTip="Required field">
+      <nz-select nzShowSearch [nzOptions]="types$ | async" formControlName="type_id"></nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item *ngIf="type !== 'show'">
+    <nz-form-control>
+      <button nz-button nzType="primary">{{ type === 'create' ? 'Create' : 'Update'}}</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>

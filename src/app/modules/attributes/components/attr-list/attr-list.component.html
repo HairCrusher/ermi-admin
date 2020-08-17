@@ -1,0 +1,33 @@
+<nz-table #attributeTable [nzData]="attributes">
+  <thead>
+  <tr>
+    <th scope="col">ID</th>
+    <th scope="col">Name</th>
+    <th scope="col">Type</th>
+    <th scope="col" *ngIf="showActions">Actions</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr
+    *ngFor="let attr of attributeTable.data"
+    (click)="rowClick(attr)"
+  >
+    <td>{{attr.id}}</td>
+    <td>{{attr.name}}</td>
+    <td>{{attr.type.type}}</td>
+    <td *ngIf="showActions">
+      <nz-button-group>
+        <button
+          nz-button
+          type="button"
+          nzType="danger"
+          (click)="delete(attr)"
+        >
+          <fa-icon [icon]="icons.faTrashAlt"></fa-icon>
+          Delete
+        </button>
+      </nz-button-group>
+    </td>
+  </tr>
+  </tbody>
+</nz-table>

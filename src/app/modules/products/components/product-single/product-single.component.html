@@ -1,0 +1,166 @@
+<nz-row nzGutter="16">
+  <nz-col nzSpan="20">
+    <nz-card [nzLoading]="loading$ | async">
+      <ng-template [ngIf]="!(loading$ | async)">
+        <div *ngIf="showEditSwitch">
+          <span>Editable </span>
+          <nz-switch [ngModel]="isEdit" (ngModelChange)="changeEditMode($event)"></nz-switch>
+        </div>
+        <form nz-form nzLayout="vertical" [formGroup]="form">
+          <nz-form-item>
+            <nz-form-label>Attributes set</nz-form-label>
+            <nz-form-control>
+              <nz-select
+                [nzOptions]="attrSets | async"
+                formControlName="attr_set_id"
+                nzShowSearch
+                nzAllowClear
+              >
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzRequired]="true">Name</nz-form-label>
+            <nz-form-control>
+              <input nz-input formControlName="name">
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>Description</nz-form-label>
+            <nz-form-control>
+              <textarea nz-input formControlName="desc"></textarea>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-collapse formArrayName="variants">
+            <nz-collapse-panel
+              *ngFor="let variant of form.get('variants').value; let i = index; trackBy: trackByVariants"
+              [nzHeader]="'Product variant #' + (i + 1)"
+              [nzExtra]="'[Price: ' + (variant.price | number:'1.2') + ']'"
+              nzActive
+              [formGroupName]="i"
+            >
+              <nz-form-item>
+                <nz-form-label>Description</nz-form-label>
+                <nz-form-control>
+                  <textarea nz-input formControlName="desc"></textarea>
+                </nz-form-control>
+              </nz-form-item>
+              <nz-row [nzGutter]="[16, 16]">
+                <nz-col nzSpan="8">
+                  <nz-form-item>
+                    <nz-form-label [nzRequired]="true">Price</nz-form-label>
+                    <nz-form-control>
+                      <input nz-input formControlName="price">
+                    </nz-form-control>
+                  </nz-form-item>
+                </nz-col>
+                <nz-col nzSpan="8">
+                  <nz-form-item>
+                    <nz-form-label>Discount price</nz-form-label>
+                    <nz-form-control>
+                      <input nz-input formControlName="discount_price">
+                    </nz-form-control>
+                  </nz-form-item>
+                </nz-col>
+                <nz-col nzSpan="8">
+                  <nz-form-item>
+                    <nz-form-label>Weight</nz-form-label>
+                    <nz-form-control>
+                      <input nz-input formControlName="weight">
+                    </nz-form-control>
+                  </nz-form-item>
+                </nz-col>
+                <nz-col nzSpan="8">
+                  <nz-form-item>
+                    <nz-form-label>Is discount</nz-form-label>
+                    <nz-form-control>
+                      <nz-switch formControlName="is_discount"></nz-switch>
+                    </nz-form-control>
+                  </nz-form-item>
+                </nz-col>
+                <nz-col nzSpan="8">
+                  <nz-form-item>
+                    <nz-form-label>Is available</nz-form-label>
+                    <nz-form-control>
+                      <nz-switch formControlName="is_available"></nz-switch>
+                    </nz-form-control>
+                  </nz-form-item>
+                </nz-col>
+                <nz-col nzSpan="8">
+                  <nz-form-item>
+                    <nz-form-label>In stock quantity</nz-form-label>
+                    <nz-form-control>
+                      <input nz-input formControlName="in_stock_qty">
+                    </nz-form-control>
+                  </nz-form-item>
+                </nz-col>
+              </nz-row>
+
+              <hr>
+
+              <nz-row [nzGutter]="[16, 16]" formArrayName="attrs">
+                <nz-col [nzLg]="8" *ngFor="let attrVal of form.get('variants').value[i].attrs; let j = index; trackBy: trackByAttrVal">
+                  <nz-form-item [formGroupName]="j">
+                    <nz-form-label>{{attrVal.attribute.name}}</nz-form-label>
+                    <nz-form-control>
+                      <input
+                        type="text"
+                        nz-input
+                        formControlName="value"
+                      >
+                    </nz-form-control>
+                  </nz-form-item>
+                </nz-col>
+                <nz-col>
+                  <nz-form-item>
+                    <nz-form-control nzSpan="24">
+                      <button nz-button nzType="dashed" class="remove-button" (click)="addAttribute(i)"  [disabled]="!isEdit">
+                        <i nz-icon nzType="plus"></i>
+                        Add attribute
+                      </button>
+                    </nz-form-control>
+                  </nz-form-item>
+                </nz-col>
+              </nz-row>
+              <nz-form-item *ngIf="i !== 0">
+                <nz-form-control nzSpan="24">
+                  <button nz-button nzType="dashed" class="remove-button" (click)="removeVariant(i)" [disabled]="!isEdit">
+                    <i nz-icon nzType="minus"></i>
+                    Remove variant
+                  </button>
+                </nz-form-control>
+              </nz-form-item>
+            </nz-collapse-panel>
+          </nz-collapse>
+          <nz-form-item>
+            <nz-form-control nzSpan="24">
+              <button nz-button nzType="dashed" class="add-button" (click)="addVariant()" [disabled]="!isEdit">
+                <i nz-icon nzType="plus"></i>
+                Add variant
+              </button>
+            </nz-form-control>
+          </nz-form-item>
+        </form>
+      </ng-template>
+    </nz-card>
+
+  </nz-col>
+  <nz-col nzSpan="4">
+    <nz-card class="actions">
+      <button
+        nz-button
+        nzSize="large"
+        nzType="primary"
+        [disabled]="!isEdit || form.invalid"
+        (click)="submit()"
+      >Save</button>
+      <button
+        nz-button
+        nzSize="large"
+        nzType="danger"
+        (click)="delete()"
+        *ngIf="showEditSwitch"
+      >Delete</button>
+    </nz-card>
+  </nz-col>
+</nz-row>

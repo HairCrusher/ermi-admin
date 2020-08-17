@@ -1,0 +1,11 @@
+<app-product-list [products]="products$ | async"></app-product-list>
+
+<ng-template #extras>
+  <button
+    nz-button
+    type="button"
+    nzType="primary"
+    routerLink="/products/create"
+  >Create product
+  </button>
+</ng-template>

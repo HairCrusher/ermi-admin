@@ -1,0 +1,19 @@
+<app-attr-list [attributes]="attributes$ | async" (rowClickEvent)="openUpdateModal($event)"></app-attr-list>
+
+<nz-modal [nzTitle]="'Update attribute'" [(nzVisible)]="modalUpdateShow" [nzFooter]="null" nzModalType="default" (nzOnCancel)="closeUpdateModal()">
+  <app-attr-single-modal (modalEvent)="closeUpdateModal()" type="update" [attr]="attributeForUpdate$ | async"></app-attr-single-modal>
+</nz-modal>
+
+<ng-template #extras>
+  <button
+    nz-button
+    type="button"
+    nzType="primary"
+    (click)="modalCreateShow = true"
+  >Create attribute
+  </button>
+
+  <nz-modal [nzTitle]="'Create attribute'" [(nzVisible)]="modalCreateShow" [nzFooter]="null" nzModalType="default" (nzOnCancel)="modalCreateShow = false">
+    <app-attr-single-modal (modalEvent)="onCreate($event)" type="create"></app-attr-single-modal>
+  </nz-modal>
+</ng-template>
