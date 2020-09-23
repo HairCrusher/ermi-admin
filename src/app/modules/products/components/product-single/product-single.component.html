@@ -101,13 +101,15 @@
               <nz-row [nzGutter]="[16, 16]" formArrayName="attrs">
                 <nz-col [nzLg]="8" *ngFor="let attrVal of form.get('variants').value[i].attrs; let j = index; trackBy: trackByAttrVal">
                   <nz-form-item [formGroupName]="j">
-                    <nz-form-label>{{attrVal.attribute.name}}</nz-form-label>
+                    <nz-form-label class="attr">
+                      <span>{{attrVal.attribute.name}}</span>
+                      <div class="actions">
+                        <fa-icon [icon]="icons.faPenAlt" (click)="editAttribute(i, j)"></fa-icon>
+                        <fa-icon [icon]="icons.faTrashAlt" (click)="removeAttribute(i, j)"></fa-icon>
+                      </div>
+                    </nz-form-label>
                     <nz-form-control>
-                      <input
-                        type="text"
-                        nz-input
-                        formControlName="value"
-                      >
+                      <p class="attr-value">{{attrVal.value}}</p>
                     </nz-form-control>
                   </nz-form-item>
                 </nz-col>

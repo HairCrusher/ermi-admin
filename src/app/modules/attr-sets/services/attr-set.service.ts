@@ -4,10 +4,12 @@ import {Observable} from "rxjs";
 import {Attribute} from "@modules/attributes/types";
 import {AttrSet} from "@modules/attr-sets/types";
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class AttrSetService {
 
-  private url = '/api/attr_sets';
+  private url = '/api/admin/attr_sets';
 
   constructor(private http: HttpClient) {
   }

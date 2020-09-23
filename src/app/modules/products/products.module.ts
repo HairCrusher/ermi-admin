@@ -4,7 +4,6 @@ import {ProductListPageComponent} from './pages/product-list-page/product-list-p
 import {ProductSinglePageComponent} from './pages/product-single-page/product-single-page.component';
 import {ProductCreatePageComponent} from './pages/product-create-page/product-create-page.component';
 import {ProductsRoutingModule} from "@modules/products/products-routing.module";
-import {ProductService} from "@modules/products/services/product.service";
 import {ProductListComponent} from './components/product-list/product-list.component';
 import {
   NzButtonModule,
@@ -12,14 +11,15 @@ import {
   NzCollapseModule,
   NzFormModule, NzIconModule,
   NzInputModule,
-  NzListModule, NzSelectModule, NzSwitchModule,
-  NzTableModule
+  NzListModule, NzModalModule, NzSelectModule, NzSwitchModule,
+  NzTableModule, NzTypographyModule
 } from "ng-zorro-antd";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {NgxsModule} from "@ngxs/store";
 import {ProductState} from "@modules/products/store/product.state";
-import { ProductSingleComponent } from './components/product-single/product-single.component';
+import {ProductSingleComponent} from './components/product-single/product-single.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {ProductAttrModalComponent} from './components/product-attr-modal/product-attr-modal.component';
 
 
 @NgModule({
@@ -28,7 +28,8 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
     ProductSinglePageComponent,
     ProductCreatePageComponent,
     ProductListComponent,
-    ProductSingleComponent
+    ProductSingleComponent,
+    ProductAttrModalComponent
   ],
   imports: [
     SharedModule,
@@ -46,9 +47,9 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
     FormsModule,
     ReactiveFormsModule,
     NzIconModule,
-    NzSelectModule
+    NzSelectModule,
+    NzTypographyModule
   ],
-  providers: [ProductService],
 })
 export class ProductsModule {
 }

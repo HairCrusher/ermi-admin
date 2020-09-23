@@ -1,19 +1,24 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {AttrSharedModule} from "@modules/attributes/shared/attr-shared.module";
-import {AttrSetsSharedModule} from "@modules/attr-sets/shared/attr-set-shared.module";
+import {NzModalModule, NzNotificationModule} from "ng-zorro-antd";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 
 @NgModule({
   declarations: [],
   imports: [
     CommonModule,
-    AttrSharedModule,
-    AttrSetsSharedModule
+    NzNotificationModule,
+    NzModalModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   exports: [
     CommonModule,
-    AttrSharedModule
+    NzNotificationModule,
+    NzModalModule,
+    FormsModule,
+    ReactiveFormsModule
   ]
 })
 export class SharedModule {

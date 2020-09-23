@@ -2,6 +2,9 @@ import {Component, OnInit, ChangeDetectionStrategy, Input} from '@angular/core';
 import {Product} from "@modules/products/types";
 import {faEdit} from '@fortawesome/free-regular-svg-icons';
 import {ActivatedRoute, Router} from "@angular/router";
+import {Select} from "@ngxs/store";
+import {ProductState} from "@modules/products/store/product.state";
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'app-product-list',
@@ -12,6 +15,9 @@ import {ActivatedRoute, Router} from "@angular/router";
 export class ProductListComponent implements OnInit {
 
   @Input() products: Product[];
+
+  @Select(ProductState.loading)
+  loading$: Observable<boolean>;
 
   icons = {faEdit};
 

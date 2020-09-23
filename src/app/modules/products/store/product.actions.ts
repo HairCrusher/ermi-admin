@@ -18,6 +18,12 @@ export class ProductCreate {
   }
 }
 
+export class ProductEdit {
+  public static readonly type = '[Product] Edit product';
+  constructor(public payload: { product: Product }) {
+  }
+}
+
 export class ProductDelete {
   public static readonly type = '[Product] Delete product';
   constructor(public payload: { id: number }) {

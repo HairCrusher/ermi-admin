@@ -15,8 +15,7 @@ import {DefaultLayoutComponent} from './layout/default-layout/default-layout.com
 import {NzButtonModule, NzIconModule, NzLayoutModule, NzMenuModule, NzPageHeaderModule} from "ng-zorro-antd";
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {StoreModule} from "./store/store.module";
-import { NotFoundComponent } from './not-found/not-found.component';
-import {AttrSharedModule} from "@modules/attributes/shared/attr-shared.module";
+import { NotFoundComponent } from '@modules/not-found/not-found.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 
 registerLocaleData(en);

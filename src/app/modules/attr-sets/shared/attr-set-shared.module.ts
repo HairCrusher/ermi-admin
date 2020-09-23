@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {AttrSetService} from "@modules/attr-sets/services/attr-set.service";
 
 
 
@@ -9,7 +8,6 @@ import {AttrSetService} from "@modules/attr-sets/services/attr-set.service";
   imports: [
     CommonModule
   ],
-  providers: [AttrSetService],
   exports: [
     CommonModule,
   ]

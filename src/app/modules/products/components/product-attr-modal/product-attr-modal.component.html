@@ -1,0 +1,15 @@
+<form nz-form nzLayout="vertical" [formGroup]="form">
+  <nz-form-item>
+    <nz-form-label>Attribute</nz-form-label>
+    <nz-form-control>
+      <nz-select [nzOptions]="attributes$ | async" formControlName="attr_id"></nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>Value</nz-form-label>
+    <nz-form-control>
+      <input [type]="inputType$ | async" nz-input formControlName="value">
+    </nz-form-control>
+  </nz-form-item>
+  <button nz-button (click)="create()">Create new</button>
+</form>
