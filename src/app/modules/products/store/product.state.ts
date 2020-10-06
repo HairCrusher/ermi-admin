@@ -1,7 +1,7 @@
 import {Product} from "@modules/products/types";
 import {Action, Selector, State, StateContext} from "@ngxs/store";
-import {ProductCreate, ProductDelete, ProductFetch, ProductGet} from "./product.actions";
-import {ProductService} from "@modules/products/services/product.service";
+import {ProductCreate, ProductDelete, ProductEdit, ProductFetch, ProductGet} from "./product.actions";
+import {ProductAdminService} from "@modules/products/services/product-admin.service";
 import {tap} from "rxjs/operators";
 import {Injectable} from "@angular/core";
 import {of} from "rxjs";
@@ -9,19 +9,21 @@ import {of} from "rxjs";
 export interface ProductStateModel {
   product: Product,
   products: Product[];
+  loading: boolean;
 }
 
 @State<ProductStateModel>({
   name: 'products',
   defaults: {
     products: [],
-    product: null
+    product: null,
+    loading: false
   }
 })
 @Injectable()
 export class ProductState {
   constructor(
-    private productService: ProductService
+    private productService: ProductAdminService
   ) {
   }
 
@@ -35,13 +37,19 @@ export class ProductState {
     return products;
   }
 
+  @Selector()
+  static loading({loading}: ProductStateModel) {
+    return loading;
+  }
+
   @Action(ProductFetch)
   fetchProduct(
     {patchState, getState}: StateContext<ProductStateModel>,
     {payload: {options}}: ProductFetch
   ) {
-    if(!getState().products.length) {
-      return this.productService.list(options).pipe(tap(products => patchState({products})))
+    if (!getState().products.length) {
+      patchState({loading: true});
+      return this.productService.list(options).pipe(tap(products => patchState({products, loading: false})))
     }
   }
 
@@ -62,7 +70,7 @@ export class ProductState {
       patchState({product});
       return of(product);
     } else {
-      return this.productService.get(id).pipe(tap(p => patchState({product: p})));
+      return this.productService.get(id).pipe(tap(p => patchState({product: p, loading: true})));
     }
   }
 
@@ -74,6 +82,22 @@ export class ProductState {
     return this.productService.create(product).pipe(tap((product) => {
       const {products} = getState();
       patchState({products: [...products, product], product});
+    }));
+  }
+
+  @Action(ProductEdit)
+  editProduct(
+    {patchState, getState}: StateContext<ProductStateModel>,
+    {payload: {product}}: ProductEdit
+  ) {
+    return this.productService.update(product.id, product).pipe(tap(() => {
+      const state = getState();
+      const products = [...state.products];
+      const i = products.findIndex(p => p.id === product.id);
+      if (i >= 0) {
+        products[i] = product;
+        patchState({products});
+      }
     }));
   }
 

@@ -1,0 +1,44 @@
+<p nz-typography nzType="warning">{{totalProducts$ | async}} items found</p>
+<nz-list
+  [nzLoading]="loading$ | async"
+  [nzDataSource]="products$ | async"
+  [nzBordered]="true"
+  nzItemLayout="vertical"
+>
+  <nz-list-item *ngFor="let product of products$ | async; trackBy:trackById">
+    <nz-list-item-meta
+      [nzTitle]="product.name"
+      [nzDescription]="product.desc"
+    ></nz-list-item-meta>
+    <nz-card
+      [nzBordered]="false"
+      class="variant"
+      *ngFor="let variant of product.variants"
+    >
+      <nz-card-meta [nzTitle]="price" [nzDescription]="'in_stock - ' + variant.in_stock_qty"></nz-card-meta>
+      <ng-template #price>
+        <span>Price</span>
+        <span>
+          {{variant.price}}
+          <fa-icon [icon]="imgs.faRubleSign"></fa-icon>
+        </span>
+      </ng-template>
+      <nz-list>
+        <nz-list-item *ngFor="let attr of keyValue(variant.attrs)">
+          <span>{{attr.name}}</span>
+          <span>{{attr.value}}</span>
+        </nz-list-item>
+      </nz-list>
+    </nz-card>
+    <nz-list-item-extra>
+      <img alt="example" src="https://via.placeholder.com/400X300"/>
+    </nz-list-item-extra>
+  </nz-list-item>
+  <nz-list-pagination>
+    <nz-pagination
+      [nzPageSize]="pageSize"
+      (nzPageIndexChange)="pageChange($event)"
+      [nzTotal]="totalProducts$ | async"
+    ></nz-pagination>
+  </nz-list-pagination>
+</nz-list>

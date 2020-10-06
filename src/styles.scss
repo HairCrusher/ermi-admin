@@ -2,3 +2,15 @@
 button[nz-button] fa-icon {
   margin-right: 0.5em;
 }
+
+form[nzlayout='vertical'].grid {
+  .ant-form-item {
+    flex-direction: row;
+  }
+}
+
+.ant-select-item-option-content {
+  display: flex;
+  justify-content: space-between;
+  padding-right: 1em;
+}

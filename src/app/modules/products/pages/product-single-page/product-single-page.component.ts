@@ -1,12 +1,15 @@
 import {AfterViewInit, Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {LayoutService} from "../../../../services/layout.service";
-import {Select, Store} from "@ngxs/store";
+import {Actions, ofActionSuccessful, Select, Store} from "@ngxs/store";
 import {ProductState} from "@modules/products/store/product.state";
 import {Observable} from "rxjs";
 import {Product} from "@modules/products/types";
 import {ActivatedRoute, Router} from "@angular/router";
-import {ProductDelete, ProductGet} from "@modules/products/store/product.actions";
+import {ProductDelete, ProductEdit, ProductGet} from "@modules/products/store/product.actions";
+import {UntilDestroy, untilDestroyed} from "@ngneat/until-destroy";
+import {NzNotificationService} from "ng-zorro-antd";
 
+@UntilDestroy()
 @Component({
   selector: 'app-product-single-page',
   templateUrl: './product-single-page.component.html',
@@ -23,11 +26,20 @@ export class ProductSinglePageComponent implements OnInit, AfterViewInit {
     private layoutService: LayoutService,
     private route: ActivatedRoute,
     private router: Router,
-    private store: Store
+    private store: Store,
+    private actions: Actions,
+    private notice: NzNotificationService
   ) {
   }
 
   ngOnInit(): void {
+    this.actions.pipe(
+      untilDestroyed(this),
+      ofActionSuccessful(ProductEdit)
+    ).subscribe(() => {
+      this.notice.success('Succes', 'Product successfully updated');
+    });
+
     const params = this.route.snapshot.params;
     const id = parseInt(params.id);
     if (!isNaN(id)) {
@@ -45,5 +57,9 @@ export class ProductSinglePageComponent implements OnInit, AfterViewInit {
     this.store.dispatch(new ProductDelete({id})).subscribe(() => {
       this.router.navigate(['products']).then();
     });
+  }
+
+  update(product: Product) {
+    this.store.dispatch(new ProductEdit({product}));
   }
 }

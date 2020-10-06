@@ -1,0 +1,8 @@
+<nz-row [nzGutter]="16">
+  <nz-col nzSpan="18">
+    <app-dashboard-product-list (onPageChange)="changePage($event)" [pageSize]="pageSize"></app-dashboard-product-list>
+  </nz-col>
+  <nz-col nzSpan="6">
+    <app-dashboard-product-filters (onSearch)="search($event)"></app-dashboard-product-filters>
+  </nz-col>
+</nz-row>

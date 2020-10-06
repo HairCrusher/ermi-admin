@@ -1,4 +1,8 @@
-<nz-table #productTable [nzData]="products">
+<nz-table
+  #productTable
+  [nzData]="products"
+  [nzLoading]="loading$ | async"
+>
   <thead>
     <tr>
       <th>ID</th>

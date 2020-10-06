@@ -3,10 +3,12 @@ import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {Attribute, AttrType} from "@modules/attributes/types";
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class AttributeService {
 
-  private url = '/api/attrs';
+  private url = '/api/admin/attrs';
 
   constructor(private http: HttpClient) {
   }
@@ -16,7 +18,7 @@ export class AttributeService {
   }
 
   getTypes(): Observable<AttrType[]> {
-    return this.http.get<AttrType[]>('/api/attr_types');
+    return this.http.get<AttrType[]>('/api/admin/attr_types');
   }
 
   get(id: number): Observable<Attribute> {

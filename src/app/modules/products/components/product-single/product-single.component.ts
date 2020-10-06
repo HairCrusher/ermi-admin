@@ -1,11 +1,22 @@
-import {Component, OnInit, ChangeDetectionStrategy, Input, Output, EventEmitter} from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  Input,
+  Output,
+  EventEmitter,
+  ViewContainerRef,
+  ChangeDetectorRef
+} from '@angular/core';
 import {AttrValue, Product, ProductVariant} from "@modules/products/types";
 import {FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {BehaviorSubject, Observable} from "rxjs";
 import {filter, map, tap} from "rxjs/operators";
 import {Store} from "@ngxs/store";
 import {AttrSetState} from "@modules/attr-sets/store/attr-set.state";
-import {NzSelectOptionInterface} from "ng-zorro-antd";
+import {NzModalService, NzSelectOptionInterface} from "ng-zorro-antd";
+import {ProductAttrModalComponent} from "@modules/products/components/product-attr-modal/product-attr-modal.component";
+import {faTrashAlt, faPenAlt} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-product-single',
@@ -14,6 +25,8 @@ import {NzSelectOptionInterface} from "ng-zorro-antd";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProductSingleComponent implements OnInit {
+
+  readonly icons = {faTrashAlt, faPenAlt};
 
   @Input() product: Observable<Product>;
 
@@ -30,7 +43,13 @@ export class ProductSingleComponent implements OnInit {
 
   form: FormGroup;
 
-  constructor(private fb: FormBuilder, private store: Store) {
+  constructor(
+    private fb: FormBuilder,
+    private store: Store,
+    private modal: NzModalService,
+    private viewContainerRef: ViewContainerRef,
+    private cd: ChangeDetectorRef
+  ) {
   }
 
   ngOnInit(): void {
@@ -56,8 +75,8 @@ export class ProductSingleComponent implements OnInit {
     return id;
   }
 
-  trackByAttrVal(i, {id}: AttrValue) {
-    return id;
+  trackByAttrVal(i, {id, value}: AttrValue) {
+    return "" + id + value;
   }
 
   private makeProduct(
@@ -121,7 +140,7 @@ export class ProductSingleComponent implements OnInit {
   }
 
   changeEditMode(val: boolean) {
-    if(val) {
+    if (val) {
       this.form.enable();
     } else {
       this.form.disable();
@@ -183,8 +202,46 @@ export class ProductSingleComponent implements OnInit {
   }
 
   addAttribute(i: number) {
-    const variant = (this.form.get('variants') as FormArray).at(i);
-    (variant.get('attrs') as FormArray).push(this.makeEmptyPAttrValue())
+    this.modal.create<ProductAttrModalComponent>({
+      nzTitle: 'Select attribute',
+      nzContent: ProductAttrModalComponent,
+      nzViewContainerRef: this.viewContainerRef,
+      nzOnOk: ({form: {value}}) => {
+        const variant = (this.form.get('variants') as FormArray).at(i);
+        const attr = this.fb.group({
+          id: [null],
+          value: [value.value, Validators.required],
+          attr_id: [value.attr_id],
+          attribute: [value.attribute]
+        });
+        (variant.get('attrs') as FormArray).push(attr);
+        this.cd.detectChanges();
+      }
+    });
+  }
+
+  editAttribute(i: number, j: number) {
+    const variant = (this.form.get('variants') as FormArray);
+    const attr = (variant.at(i).get('attrs') as FormArray).at(j);
+
+    console.log('form', this.form);
+    console.log('editAttribute', attr);
+
+    this.modal.create<ProductAttrModalComponent>({
+      nzTitle: 'Select attribute',
+      nzContent: ProductAttrModalComponent,
+      nzComponentParams: {data: attr.value},
+      nzViewContainerRef: this.viewContainerRef,
+      nzOnOk: ({form: {value}}) => {
+        console.log('nzOnOk', value);
+        attr.patchValue({
+          value: value.value,
+          attr_id: value.attr_id,
+          attribute: value.attribute
+        });
+        // this.cd.detectChanges();
+      }
+    });
   }
 
   removeAttribute(i: number, j: number) {
