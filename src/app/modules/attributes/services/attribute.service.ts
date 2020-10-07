@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {Attribute, AttrType} from "@modules/attributes/types";
+import {environment} from "../../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AttributeService {
 
-  private url = '/api/admin/attrs';
+  private url = `${environment.API_URL}/api/admin/attrs`;
 
   constructor(private http: HttpClient) {
   }
@@ -18,7 +19,7 @@ export class AttributeService {
   }
 
   getTypes(): Observable<AttrType[]> {
-    return this.http.get<AttrType[]>('/api/admin/attr_types');
+    return this.http.get<AttrType[]>(`${environment.API_URL}/api/admin/attr_types`);
   }
 
   get(id: number): Observable<Attribute> {
