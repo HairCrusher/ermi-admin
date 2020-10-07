@@ -9,7 +9,7 @@ import {environment} from "../../../../environments/environment";
 })
 export class AttributeService {
 
-  private url = `${environment.API_URL}/api/admin/attrs`;
+  private url = `${environment.apiUrl}/api/admin/attrs`;
 
   constructor(private http: HttpClient) {
   }
@@ -19,7 +19,7 @@ export class AttributeService {
   }
 
   getTypes(): Observable<AttrType[]> {
-    return this.http.get<AttrType[]>(`${environment.API_URL}/api/admin/attr_types`);
+    return this.http.get<AttrType[]>(`${environment.apiUrl}/api/admin/attr_types`);
   }
 
   get(id: number): Observable<Attribute> {

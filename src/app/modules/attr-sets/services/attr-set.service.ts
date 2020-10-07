@@ -10,7 +10,7 @@ import {environment} from "../../../../environments/environment";
 })
 export class AttrSetService {
 
-  private url = `${environment.API_URL}/api/admin/attr_sets`;
+  private url = `${environment.apiUrl}/api/admin/attr_sets`;
 
   constructor(private http: HttpClient) {
   }

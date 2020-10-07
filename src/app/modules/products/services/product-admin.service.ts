@@ -10,7 +10,7 @@ import {environment} from "../../../../environments/environment";
 })
 export class ProductAdminService {
 
-  private url = `${environment.API_URL}/api/admin/products`;
+  private url = `${environment.apiUrl}/api/admin/products`;
 
   constructor(private http: HttpClient) {
   }
