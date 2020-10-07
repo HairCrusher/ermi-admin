@@ -3,13 +3,14 @@ import {Observable, of} from "rxjs";
 import {Product} from "@modules/products/types";
 import {Injectable} from "@angular/core";
 import {stringifyParams} from "../../../utils/helper";
+import {environment} from "../../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductAdminService {
 
-  private url = '/api/admin/products';
+  private url = `${environment.API_URL}/api/admin/products`;
 
   constructor(private http: HttpClient) {
   }

@@ -3,13 +3,14 @@ import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {Attribute} from "@modules/attributes/types";
 import {AttrSet} from "@modules/attr-sets/types";
+import {environment} from "../../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AttrSetService {
 
-  private url = '/api/admin/attr_sets';
+  private url = `${environment.API_URL}/api/admin/attr_sets`;
 
   constructor(private http: HttpClient) {
   }
