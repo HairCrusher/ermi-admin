@@ -1,6 +1,6 @@
 import {Action, Selector, State, StateContext} from "@ngxs/store";
 import {DashboardService} from "@modules/dashboard/services/dashboard.service";
-import {DashboardSearchProducts} from "@modules/dashboard/store/dashboard.actions";
+import {DashboardSearchProducts, UpdateProductsManually} from "./dashboard.actions";
 import {tap} from "rxjs/operators";
 import {Injectable} from "@angular/core";
 import {EsFilter, EsProdAggAttr, EsProduct} from "@modules/dashboard/types";
@@ -74,6 +74,14 @@ export class DashboardState {
         filters: esFilters
       })
     }));
+  }
+
+  @Action(UpdateProductsManually)
+  updateProductsManually(
+    {patchState}: StateContext<DashboardStateModel>,
+  ){
+    patchState({loading: true});
+    return this.productFS.updateStoreManually().pipe(tap(() => patchState({loading: false})));
   }
 
   private parseFilters(attrs: { doc_count: number; [p: string]: EsProdAggAttr | number }): EsFilter[] {

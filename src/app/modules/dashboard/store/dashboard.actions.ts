@@ -5,3 +5,8 @@ export class DashboardSearchProducts {
   constructor(public payload: { filters?: EsProductSearchFilters }) {
   }
 }
+
+// TODO move to suppliers
+export class UpdateProductsManually {
+  public static readonly type = '[Dashboard] Update products';
+}
