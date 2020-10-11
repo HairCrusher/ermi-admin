@@ -17,4 +17,10 @@ export class DashboardService {
   search(filters: EsProductSearchFilters): Observable<EsRespProduct> {
     return this.http.post<EsRespProduct>(`${this.url}/search`, filters);
   }
+
+  // TODO move method to suppliers
+  updateStoreManually(): Observable<any> {
+    const url = `${environment.apiUrl}/api/admin/suppliers/update-store`;
+    return this.http.get(url);
+  }
 }

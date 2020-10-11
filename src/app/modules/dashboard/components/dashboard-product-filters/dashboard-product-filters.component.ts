@@ -1,5 +1,5 @@
 import {Component, OnInit, ChangeDetectionStrategy, Output, EventEmitter, ChangeDetectorRef} from '@angular/core';
-import {Select, Selector} from "@ngxs/store";
+import {Actions, ofActionSuccessful, Select, Selector, Store} from "@ngxs/store";
 import {DashboardState} from "@modules/dashboard/store/dashboard.state";
 import {EsFilter, EsProductSearchFilters, Filter, FilterOption, OptionsMap} from "@modules/dashboard/types";
 import {combineLatest, forkJoin, Observable, of} from "rxjs";
@@ -9,6 +9,7 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 import {UntilDestroy, untilDestroyed} from "@ngneat/until-destroy";
 import {catchError, distinct, distinctUntilChanged, filter, map, startWith} from "rxjs/operators";
 import {NzSelectOptionInterface} from "ng-zorro-antd";
+import {UpdateProductsManually} from "@modules/dashboard/store/dashboard.actions";
 
 @UntilDestroy()
 @Component({
@@ -36,9 +37,13 @@ export class DashboardProductFiltersComponent implements OnInit {
 
   options: OptionsMap = {};
 
+  updBtnLoading = false;
+
   constructor(
     private fb: FormBuilder,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private store: Store,
+    private actions: Actions,
   ) {
   }
 
@@ -48,6 +53,14 @@ export class DashboardProductFiltersComponent implements OnInit {
     // this.form.valueChanges.subscribe(() => this.search());
 
     this.setFilters();
+
+    this.actions.pipe(
+      untilDestroyed(this),
+      ofActionSuccessful(UpdateProductsManually),
+    ).subscribe(() => {
+      this.updBtnLoading = false;
+      setTimeout(() => this.search(), 500);
+    });
   }
 
   getFilterName(slug: string): Observable<string> {
@@ -77,6 +90,11 @@ export class DashboardProductFiltersComponent implements OnInit {
   dropFilters() {
     this.form.reset();
     this.search();
+  }
+
+  updateProductsManually() {
+    this.updBtnLoading = true;
+    this.store.dispatch(new UpdateProductsManually());
   }
 
   private setForm() {
