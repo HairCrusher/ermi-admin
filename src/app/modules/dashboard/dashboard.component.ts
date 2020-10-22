@@ -1,8 +1,10 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import {Component, OnInit, ChangeDetectionStrategy, ViewChild, AfterViewInit} from '@angular/core';
 import {LayoutService} from "../../services/layout.service";
 import {Store} from "@ngxs/store";
 import {DashboardSearchProducts} from "@modules/dashboard/store/dashboard.actions";
-import {EsProductSearchFilters} from "@modules/dashboard/types";
+import {EsProductSearchData} from "@modules/dashboard/types";
+import {DashboardProductFiltersComponent} from "@modules/dashboard/components/dashboard-product-filters/dashboard-product-filters.component";
+import {DashboardProductListComponent} from "@modules/dashboard/components/dashboard-product-list/dashboard-product-list.component";
 
 @Component({
   selector: 'app-dashboard',
@@ -10,10 +12,12 @@ import {EsProductSearchFilters} from "@modules/dashboard/types";
   styleUrls: ['./dashboard.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, AfterViewInit {
+
+  @ViewChild(DashboardProductFiltersComponent) filters: DashboardProductFiltersComponent;
+  @ViewChild(DashboardProductListComponent) list: DashboardProductListComponent;
 
   pageSize = 20;
-  lastFilters: EsProductSearchFilters;
 
   constructor(
     private layoutService: LayoutService,
@@ -22,17 +26,15 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.layoutService.setTitle('Ermi');
-    this.search({});
   }
 
-  search(filters: EsProductSearchFilters) {
-    this.lastFilters = filters;
-    this.store.dispatch(new DashboardSearchProducts({filters: {...filters, size: this.pageSize}}));
+  ngAfterViewInit() {
+    this.search();
   }
 
-  changePage(pageIndex: number) {
-    this.store.dispatch(new DashboardSearchProducts({
-      filters: {...this.lastFilters, size: this.pageSize, from: (pageIndex - 1) * this.pageSize},
-    }))
+  search() {
+    const filters = this.filters.filters;
+    const from = this.list.pageIndex - 1;
+    this.store.dispatch(new DashboardSearchProducts({data: {filters, from, size: this.pageSize}}));
   }
 }

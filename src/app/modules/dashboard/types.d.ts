@@ -66,8 +66,14 @@ export interface EsFilter {
   variants: Bucket[]
 }
 
-export interface EsProductSearchFilters {
-  filters?: Filter[];
+export interface EsProductFilter {
+  name: string;
+  type?: any; // TODO add filter type
+  value: string | number | string[] | number[];
+}
+
+export interface EsProductSearchData {
+  filters?: EsProductFilter[];
   size?: number;
   from?: number;
 }
@@ -85,4 +91,29 @@ export interface FilterOption extends NzSelectOptionInterface {
 
 export interface OptionsMap {
   [key: string]: FilterOption[]
+}
+
+// WHEEL-SIZE +++++++++++++++++++++++
+
+export interface WSMake {
+  slug: string;
+  name: string;
+  name_en: string;
+}
+
+export interface WSYear {
+  slug: number;
+  name: number;
+}
+
+export interface WSModel {
+  slug: string;
+  name: string;
+  name_en: string;
+}
+
+export interface WSSearchItem {
+  name: string;
+  type?: any;
+  value: string | number | string[] | number[];
 }

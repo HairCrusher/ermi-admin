@@ -1,0 +1,48 @@
+<form nz-form [formGroup]="form" nzLayout="vertical" (ngSubmit)="search()">
+  <nz-form-item>
+    <nz-form-label>Makes</nz-form-label>
+    <nz-form-control>
+      <nz-select
+        formControlName="make"
+        [nzOptions]="makes$ | async"
+        nzShowSearch
+      ></nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>Year</nz-form-label>
+    <nz-form-control>
+      <nz-select
+        formControlName="year"
+        [nzOptions]="years$ | async"
+        nzShowSearch
+      ></nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>Model</nz-form-label>
+    <nz-form-control>
+      <nz-select
+        formControlName="model"
+        [nzOptions]="models$ | async"
+        nzShowSearch
+      ></nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control>
+      <button
+        nz-button
+        nzType="primary"
+        [nzLoading]="loading$ | async"
+        [disabled]="form.invalid"
+      >Search by model</button>
+      <button
+        nz-button
+        nzType="danger"
+        type="button"
+        (click)="dropModelFilter()"
+      >Drop model filter</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>

@@ -16,10 +16,11 @@ import {
 import {NgxsModule} from "@ngxs/store";
 import {DashboardState} from "@modules/dashboard/store/dashboard.state";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
+import { WheelSizeFilterComponent } from './components/wheel-size-filter/wheel-size-filter.component';
 
 
 @NgModule({
-  declarations: [DashboardComponent, DashboardProductListComponent, DashboardProductFiltersComponent],
+  declarations: [DashboardComponent, DashboardProductListComponent, DashboardProductFiltersComponent, WheelSizeFilterComponent],
   imports: [
     SharedModule,
     DashboardRoutingModule,
