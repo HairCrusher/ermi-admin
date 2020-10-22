@@ -31,6 +31,8 @@ export class DashboardProductListComponent implements OnInit {
   @Select(DashboardState.loading)
   loading$: Observable<boolean>;
 
+  pageIndex = 1;
+
   constructor() { }
 
   ngOnInit(): void {
@@ -41,7 +43,8 @@ export class DashboardProductListComponent implements OnInit {
   }
 
   pageChange(index: number) {
-    this.onPageChange.emit(index);
+    this.pageIndex = index;
+    this.onPageChange.emit();
   }
 
   trackById = (_, item: EsProduct) => item.id;

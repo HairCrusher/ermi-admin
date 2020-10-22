@@ -1,7 +1,14 @@
 import {Component, OnInit, ChangeDetectionStrategy, Output, EventEmitter, ChangeDetectorRef} from '@angular/core';
 import {Actions, ofActionSuccessful, Select, Selector, Store} from "@ngxs/store";
 import {DashboardState} from "@modules/dashboard/store/dashboard.state";
-import {EsFilter, EsProductSearchFilters, Filter, FilterOption, OptionsMap} from "@modules/dashboard/types";
+import {
+  EsFilter,
+  EsProductFilter,
+  EsProductSearchData,
+  Filter,
+  FilterOption,
+  OptionsMap
+} from "@modules/dashboard/types";
 import {combineLatest, forkJoin, Observable, of} from "rxjs";
 import {AttributeState} from "@modules/attributes/store/attribute.state";
 import {Attribute} from "@modules/attributes/types";
@@ -21,7 +28,7 @@ import {UpdateProductsManually} from "@modules/dashboard/store/dashboard.actions
 export class DashboardProductFiltersComponent implements OnInit {
 
   @Output()
-  onSearch = new EventEmitter<EsProductSearchFilters>();
+  onSearch = new EventEmitter<EsProductSearchData>();
 
   @Select(AttributeState.attributes)
   attributes$: Observable<Attribute[]>;
@@ -34,6 +41,8 @@ export class DashboardProductFiltersComponent implements OnInit {
 
   form: FormGroup;
   controls: string[];
+
+  filters: EsProductFilter[] = [];
 
   options: OptionsMap = {};
 
@@ -71,16 +80,14 @@ export class DashboardProductFiltersComponent implements OnInit {
 
   search() {
     const values = this.form.value;
-    const filters: EsProductSearchFilters = {
-      filters: Object.keys(this.form.value).reduce<Filter[]>((arr, key) => {
-        if (values[key]?.length) {
-          arr.push({name: key, value: values[key]})
-        }
-        return arr;
-      }, [])
-    };
+    this.filters = Object.keys(this.form.value).reduce<Filter[]>((arr, key) => {
+      if (values[key]?.length) {
+        arr.push({name: key, value: values[key]})
+      }
+      return arr;
+    }, []);
 
-    this.onSearch.emit(filters);
+    this.onSearch.emit();
   }
 
   getFilterOptions(control: string) {

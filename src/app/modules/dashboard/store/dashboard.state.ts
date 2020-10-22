@@ -59,12 +59,12 @@ export class DashboardState {
   @Action(DashboardSearchProducts)
   searchProducts(
     {patchState}: StateContext<DashboardStateModel>,
-    {payload: {filters}}: DashboardSearchProducts
+    {payload: {data}}: DashboardSearchProducts
   ){
     patchState({loading: true});
-    return this.productFS.search(filters).pipe(tap(resp => {
+    return this.productFS.search(data).pipe(tap(resp => {
       const esFilters = this.parseFilters(resp.aggregations.attrs);
-      if(!filters?.filters?.length) {
+      if(!data?.filters?.length) {
         patchState({enableFilters: esFilters});
       }
       patchState({
