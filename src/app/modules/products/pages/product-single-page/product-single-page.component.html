@@ -1,1 +1,5 @@
-<app-product-single [product]="product$" (submitForm)="update($event)" (deleteProduct)="delete($event)"></app-product-single>
+<app-product-single
+  [product]="product$ | async"
+  (submitForm)="update($event)"
+  (deleteProduct)="delete($event)"
+></app-product-single>

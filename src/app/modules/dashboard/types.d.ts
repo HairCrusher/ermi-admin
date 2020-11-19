@@ -1,4 +1,5 @@
 import {NzSelectOptionInterface} from "ng-zorro-antd";
+import {Image} from "@modules/images/types";
 
 export interface EsRespProduct {
   hits: {
@@ -51,6 +52,7 @@ export interface EsProductVariant {
   is_available: boolean;
   is_discount: boolean;
   attrs: EsAttrValue;
+  images: Image[];
 }
 
 export interface EsAttrValue {

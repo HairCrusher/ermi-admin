@@ -1,0 +1,22 @@
+<div
+  nz-row
+  [nzGutter]="[16, 16]"
+  cdkDropList
+  cdkDropListOrientation="horizontal"
+  (cdkDropListDropped)="listChange($event)"
+>
+  <nz-col nzSpan="6" cdkDrag *ngFor="let image of images" [cdkDragDisabled]="isDisabled">
+    <app-product-image
+      [image]="image"
+      (deleteEvent)="delete($event)"
+    ></app-product-image>
+  </nz-col>
+</div>
+
+<button
+  nz-button
+  type="button"
+  [disabled]="isDisabled"
+  nzType="dashed"
+  (click)="addImages()"
+><i nz-icon nzType="plus" nzTheme="outline"></i> Add images</button>

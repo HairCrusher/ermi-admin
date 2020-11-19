@@ -29,16 +29,22 @@ export class WheelSizeFilterComponent implements OnInit {
 
   years$ = new BehaviorSubject<NzSelectOptionInterface[]>([]);
   models$ = new BehaviorSubject<NzSelectOptionInterface[]>([]);
+  generations$ = new BehaviorSubject<NzSelectOptionInterface[]>([]);
+  trims$ = new BehaviorSubject<NzSelectOptionInterface[]>([]);
 
   form = this.fb.group({
     make: [null, Validators.required],
     year: [{value: null, disabled: true}, Validators.required],
-    model: [{value: null, disabled: true}, Validators.required]
+    model: [{value: null, disabled: true}, Validators.required],
+    generation: [{value: null, disabled: true}, Validators.required],
+    trim: [{value: null, disabled: true}, Validators.required],
   });
 
   private make = this.form.get('make');
   private year = this.form.get('year');
   private model = this.form.get('model');
+  private generation = this.form.get('generation');
+  private trim = this.form.get('trim');
 
   loading$ = new BehaviorSubject(false);
 
@@ -56,30 +62,45 @@ export class WheelSizeFilterComponent implements OnInit {
     const cookie = this.cookie.get(environment.wheelSizeCookieName);
 
     if (cookie) {
-      const {make, year, model} = JSON.parse(cookie).filters;
-      this.isSettingCookie = true;
-      this.WSService.getYears(make).pipe(
-        untilDestroyed(this),
-        tap(years => {
-          this.years$.next(years.map(({name, slug}) =>
-            ({label: name.toString(), value: slug})));
-          this.year.enable();
-          this.loading$.next(true);
-        }),
-        switchMap(() => this.WSService.getModels({
-          year,
-          make
-        }))
-      ).subscribe((models) => {
-        this.models$.next(models.map(({name, slug}) =>
-          ({label: name, value: slug})));
-        this.model.enable();
-        this.form.patchValue({make, year, model});
-        this.isSettingCookie = false;
-        this.loading$.next(false);
-      });
+      this.setDataFromCookie(cookie);
     }
 
+    this.setFormWatchers();
+  }
+
+  search() {
+    if (this.form.valid) {
+      this.loading$.next(true);
+      this.WSService.searchAttrs(this.form.value).subscribe(
+        data => {
+          if (!data.length || !data[0].length) {
+            this.notification.error('Ошибка', 'По данному фильтру отсутствует информация');
+          } else {
+            this.cookie.set(environment.wheelSizeCookieName, JSON.stringify({
+              filters: this.form.value,
+              data
+            }));
+            this.onSearch.emit();
+          }
+          this.loading$.next(false);
+        },
+        error => {
+          console.log('ERROR', error);
+          this.loading$.next(false);
+        });
+    } else {
+      console.log('ERROR: form not valid', this.form.value);
+      this.loading$.next(false);
+    }
+  }
+
+  dropModelFilter() {
+    this.make.setValue(null);
+    this.cookie.delete(environment.wheelSizeCookieName);
+    this.onSearch.emit();
+  }
+
+  private setFormWatchers() {
     this.make.valueChanges.pipe(
       untilDestroyed(this),
       filter(() => !this.isSettingCookie),
@@ -119,38 +140,97 @@ export class WheelSizeFilterComponent implements OnInit {
       this.model.enable();
       this.loading$.next(false);
     });
-  }
 
-  search() {
-    if (this.form.valid) {
-      this.loading$.next(true);
-      this.WSService.searchAttrs(this.form.value).subscribe(
-        data => {
-          if (!data.length || !data[0].length) {
-            this.notification.error('Ошибка', 'По данному фильтру отсутствует информация');
-          } else {
-            this.cookie.set(environment.wheelSizeCookieName, JSON.stringify({
-              filters: this.form.value,
-              data
-            }));
-            this.onSearch.emit();
-          }
-          this.loading$.next(false);
-        },
-        error => {
-          console.log('ERROR', error);
-          this.loading$.next(false);
-        });
-    } else {
-      console.log('ERROR: form not valid', this.form.value);
+    this.model.valueChanges.pipe(
+      untilDestroyed(this),
+      filter(() => !this.isSettingCookie),
+      tap(() => {
+        this.generation.setValue(null);
+        this.generation.disable();
+        this.generations$.next([]);
+      }),
+      filter(val => !!val),
+      tap(() => this.loading$.next(true)),
+      switchMap(model => this.WSService.getGenerations({
+        make: this.make.value,
+        year: this.year.value,
+        model
+      }))
+    ).subscribe((generations) => {
+      this.generations$.next(generations.map((gen) =>
+        ({label: gen, value: gen})));
+      this.generation.enable();
       this.loading$.next(false);
-    }
+    });
+
+    this.generation.valueChanges.pipe(
+      untilDestroyed(this),
+      filter(() => !this.isSettingCookie),
+      tap(() => {
+        this.trim.setValue(null);
+        this.trim.disable();
+        this.trims$.next([]);
+      }),
+      filter(val => !!val),
+      tap(() => this.loading$.next(true)),
+      switchMap(generation => this.WSService.getTrims({
+        make: this.make.value,
+        year: this.year.value,
+        model: this.model.value,
+        generation
+      }))
+    ).subscribe((trims) => {
+      this.trims$.next(trims.map((trim) =>
+        ({label: trim, value: trim})));
+      this.trim.enable();
+      this.loading$.next(false);
+    });
   }
 
-  dropModelFilter() {
-    this.make.setValue(null);
-    this.cookie.delete(environment.wheelSizeCookieName);
-    this.onSearch.emit();
-  }
+  private setDataFromCookie(cookie: string) {
+    const {make, year, model, generation, trim} = JSON.parse(cookie).filters;
+    this.isSettingCookie = true;
+    this.WSService.getYears(make).pipe(
+      tap(years => {
+        this.loading$.next(true);
+        this.years$.next(years.map(({name, slug}) =>
+          ({label: name.toString(), value: slug})));
+        this.year.enable();
+      }),
+      switchMap(() => this.WSService.getModels({
+        year,
+        make
+      })),
+      tap(models => {
+        this.models$.next(models.map(({name, slug}) =>
+          ({label: name, value: slug})));
+        this.model.enable();
+      }),
+      switchMap(() => this.WSService.getGenerations({
+        year,
+        make,
+        model
+      })),
+      tap(gens => {
+        this.generations$.next(gens.map(gen =>
+          ({label: gen, value: gen})
+        ));
+        this.generation.enable();
+      }),
+      switchMap(() => this.WSService.getTrims({
+        year,
+        make,
+        model,
+        generation
+      }))
+    ).subscribe((trims) => {
+      this.trims$.next(trims.map(trim =>
+        ({label: trim, value: trim})));
+      this.trim.enable();
 
+      this.form.patchValue({make, year, model, generation, trim});
+      this.isSettingCookie = false;
+      this.loading$.next(false);
+    });
+  }
 }

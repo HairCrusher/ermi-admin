@@ -20,6 +20,11 @@ import {ProductState} from "@modules/products/store/product.state";
 import {ProductSingleComponent} from './components/product-single/product-single.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {ProductAttrModalComponent} from './components/product-attr-modal/product-attr-modal.component';
+import { ProductVariantComponent } from './components/product-variant/product-variant.component';
+import { ProductImageComponent } from './components/product-image/product-image.component';
+import { ProductImagesComponent } from './components/product-images/product-images.component';
+import {DragDropModule} from "@angular/cdk/drag-drop";
+import {ImagesState} from "@modules/images/store/images.state";
 
 
 @NgModule({
@@ -29,11 +34,14 @@ import {ProductAttrModalComponent} from './components/product-attr-modal/product
     ProductCreatePageComponent,
     ProductListComponent,
     ProductSingleComponent,
-    ProductAttrModalComponent
+    ProductAttrModalComponent,
+    ProductVariantComponent,
+    ProductImageComponent,
+    ProductImagesComponent
   ],
   imports: [
     SharedModule,
-    NgxsModule.forFeature([ProductState]),
+    NgxsModule.forFeature([ProductState, ImagesState]),
     ProductsRoutingModule,
     NzListModule,
     NzTableModule,
@@ -48,7 +56,8 @@ import {ProductAttrModalComponent} from './components/product-attr-modal/product
     ReactiveFormsModule,
     NzIconModule,
     NzSelectModule,
-    NzTypographyModule
+    NzTypographyModule,
+    DragDropModule
   ],
 })
 export class ProductsModule {

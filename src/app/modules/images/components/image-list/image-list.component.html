@@ -1,0 +1,40 @@
+<nz-list
+  nzGrid
+  [nzLoading]="loading$ | async"
+  [nzPagination]="pagination"
+  [nzHeader]="header"
+>
+  <nz-row [nzGutter]="[16, 16]">
+    <nz-col nzSpan="6" *ngFor="let image of images$ | async; trackBy: trackById">
+      <app-image-card [image]="image">
+        <label nz-checkbox
+               *ngIf="selectable"
+               [nzValue]="image"
+               [nzChecked]="isCheckedImage(image)"
+               (nzCheckedChange)="checkedChange(image)"
+        ></label>
+      </app-image-card>
+    </nz-col>
+  </nz-row>
+</nz-list>
+
+<ng-template #pagination>
+  <nz-pagination
+    [nzTotal]="total$ | async"
+    [nzPageSize]="pageSize"
+    (nzPageIndexChange)="pageIndexChange($event)"
+    [(nzPageIndex)]="pageIndex"
+  ></nz-pagination>
+</ng-template>
+
+<ng-template #header>
+  <div class="actions">
+    <button
+      nz-button
+      type="button"
+      nzType="default"
+      (click)="openUploadModal()"
+    >Upload image
+    </button>
+  </div>
+</ng-template>

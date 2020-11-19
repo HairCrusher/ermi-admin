@@ -1,7 +1,7 @@
 <nz-row nzGutter="16">
   <nz-col nzSpan="20">
-    <nz-card [nzLoading]="loading$ | async">
-      <ng-template [ngIf]="!(loading$ | async)">
+    <nz-card [nzLoading]="loading">
+      <ng-template [ngIf]="!(loading)">
         <div *ngIf="showEditSwitch">
           <span>Editable </span>
           <nz-switch [ngModel]="isEdit" (ngModelChange)="changeEditMode($event)"></nz-switch>
@@ -37,101 +37,11 @@
               [nzHeader]="'Product variant #' + (i + 1)"
               [nzExtra]="'[Price: ' + (variant.price | number:'1.2') + ']'"
               nzActive
-              [formGroupName]="i"
             >
-              <nz-form-item>
-                <nz-form-label>Description</nz-form-label>
-                <nz-form-control>
-                  <textarea nz-input formControlName="desc"></textarea>
-                </nz-form-control>
-              </nz-form-item>
-              <nz-row [nzGutter]="[16, 16]">
-                <nz-col nzSpan="8">
-                  <nz-form-item>
-                    <nz-form-label [nzRequired]="true">Price</nz-form-label>
-                    <nz-form-control>
-                      <input nz-input formControlName="price">
-                    </nz-form-control>
-                  </nz-form-item>
-                </nz-col>
-                <nz-col nzSpan="8">
-                  <nz-form-item>
-                    <nz-form-label>Discount price</nz-form-label>
-                    <nz-form-control>
-                      <input nz-input formControlName="discount_price">
-                    </nz-form-control>
-                  </nz-form-item>
-                </nz-col>
-                <nz-col nzSpan="8">
-                  <nz-form-item>
-                    <nz-form-label>Weight</nz-form-label>
-                    <nz-form-control>
-                      <input nz-input formControlName="weight">
-                    </nz-form-control>
-                  </nz-form-item>
-                </nz-col>
-                <nz-col nzSpan="8">
-                  <nz-form-item>
-                    <nz-form-label>Is discount</nz-form-label>
-                    <nz-form-control>
-                      <nz-switch formControlName="is_discount"></nz-switch>
-                    </nz-form-control>
-                  </nz-form-item>
-                </nz-col>
-                <nz-col nzSpan="8">
-                  <nz-form-item>
-                    <nz-form-label>Is available</nz-form-label>
-                    <nz-form-control>
-                      <nz-switch formControlName="is_available"></nz-switch>
-                    </nz-form-control>
-                  </nz-form-item>
-                </nz-col>
-                <nz-col nzSpan="8">
-                  <nz-form-item>
-                    <nz-form-label>In stock quantity</nz-form-label>
-                    <nz-form-control>
-                      <input nz-input formControlName="in_stock_qty">
-                    </nz-form-control>
-                  </nz-form-item>
-                </nz-col>
-              </nz-row>
-
-              <hr>
-
-              <nz-row [nzGutter]="[16, 16]" formArrayName="attrs">
-                <nz-col [nzLg]="8" *ngFor="let attrVal of form.get('variants').value[i].attrs; let j = index; trackBy: trackByAttrVal">
-                  <nz-form-item [formGroupName]="j">
-                    <nz-form-label class="attr">
-                      <span>{{attrVal.attribute.name}}</span>
-                      <div class="actions">
-                        <fa-icon [icon]="icons.faPenAlt" (click)="editAttribute(i, j)"></fa-icon>
-                        <fa-icon [icon]="icons.faTrashAlt" (click)="removeAttribute(i, j)"></fa-icon>
-                      </div>
-                    </nz-form-label>
-                    <nz-form-control>
-                      <p class="attr-value">{{attrVal.value}}</p>
-                    </nz-form-control>
-                  </nz-form-item>
-                </nz-col>
-                <nz-col>
-                  <nz-form-item>
-                    <nz-form-control nzSpan="24">
-                      <button nz-button nzType="dashed" class="remove-button" (click)="addAttribute(i)"  [disabled]="!isEdit">
-                        <i nz-icon nzType="plus"></i>
-                        Add attribute
-                      </button>
-                    </nz-form-control>
-                  </nz-form-item>
-                </nz-col>
-              </nz-row>
-              <nz-form-item *ngIf="i !== 0">
-                <nz-form-control nzSpan="24">
-                  <button nz-button nzType="dashed" class="remove-button" (click)="removeVariant(i)" [disabled]="!isEdit">
-                    <i nz-icon nzType="minus"></i>
-                    Remove variant
-                  </button>
-                </nz-form-control>
-              </nz-form-item>
+              <app-product-variant
+                [formControlName]="i"
+                [isEdit]="isEdit"
+              ></app-product-variant>
             </nz-collapse-panel>
           </nz-collapse>
           <nz-form-item>

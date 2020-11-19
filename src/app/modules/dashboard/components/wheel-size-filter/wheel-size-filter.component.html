@@ -30,6 +30,26 @@
     </nz-form-control>
   </nz-form-item>
   <nz-form-item>
+    <nz-form-label>Generation</nz-form-label>
+    <nz-form-control>
+      <nz-select
+        formControlName="generation"
+        [nzOptions]="generations$ | async"
+        nzShowSearch
+      ></nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>Trim</nz-form-label>
+    <nz-form-control>
+      <nz-select
+        formControlName="trim"
+        [nzOptions]="trims$ | async"
+        nzShowSearch
+      ></nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
     <nz-form-control>
       <button
         nz-button

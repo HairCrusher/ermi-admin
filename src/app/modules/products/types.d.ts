@@ -26,7 +26,3 @@ export type AttrValue = {
   attr_id?: number;
   attribute: Attribute
 };
-
-export type ProductFetchOptions = {
-  // TODO pagination
-};
