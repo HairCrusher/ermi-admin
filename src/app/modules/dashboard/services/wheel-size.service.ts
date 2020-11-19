@@ -28,7 +28,15 @@ export class WheelSizeService {
     return this.http.post<WSModel[]>(`${this.url}/models`, data)
   }
 
-  searchAttrs(data: { make: string, year: string, model: string }): Observable<WSSearchItem[][]> {
+  getGenerations(data: { make: string, year: string, model: string }): Observable<string[]> {
+    return this.http.post<string[]>(`${this.url}/generations`, data)
+  }
+
+  getTrims(data: { make: string, year: string, model: string, generation: string }): Observable<string[]> {
+    return this.http.post<string[]>(`${this.url}/trims`, data)
+  }
+
+  searchAttrs(data: { make: string, year: string, model: string, generation: string, trim: string }): Observable<WSSearchItem[][]> {
     return this.http.post<WSSearchItem[][]>(`${this.url}/search`, data);
   }
 }

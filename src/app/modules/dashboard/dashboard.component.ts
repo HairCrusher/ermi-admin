@@ -2,7 +2,6 @@ import {Component, OnInit, ChangeDetectionStrategy, ViewChild, AfterViewInit} fr
 import {LayoutService} from "../../services/layout.service";
 import {Store} from "@ngxs/store";
 import {DashboardSearchProducts} from "@modules/dashboard/store/dashboard.actions";
-import {EsProductSearchData} from "@modules/dashboard/types";
 import {DashboardProductFiltersComponent} from "@modules/dashboard/components/dashboard-product-filters/dashboard-product-filters.component";
 import {DashboardProductListComponent} from "@modules/dashboard/components/dashboard-product-list/dashboard-product-list.component";
 
@@ -17,7 +16,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   @ViewChild(DashboardProductFiltersComponent) filters: DashboardProductFiltersComponent;
   @ViewChild(DashboardProductListComponent) list: DashboardProductListComponent;
 
-  pageSize = 20;
+  pageSize = 18;
 
   constructor(
     private layoutService: LayoutService,

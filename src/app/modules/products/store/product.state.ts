@@ -10,12 +10,14 @@ export interface ProductStateModel {
   product: Product,
   products: Product[];
   loading: boolean;
+  total: number;
 }
 
 @State<ProductStateModel>({
   name: 'products',
   defaults: {
     products: [],
+    total: 0,
     product: null,
     loading: false
   }
@@ -42,15 +44,22 @@ export class ProductState {
     return loading;
   }
 
+  @Selector()
+  static total({total}: ProductStateModel) {
+    return total;
+  }
+
   @Action(ProductFetch)
   fetchProduct(
-    {patchState, getState}: StateContext<ProductStateModel>,
+    {patchState}: StateContext<ProductStateModel>,
     {payload: {options}}: ProductFetch
   ) {
-    if (!getState().products.length) {
-      patchState({loading: true});
-      return this.productService.list(options).pipe(tap(products => patchState({products, loading: false})))
-    }
+    patchState({loading: true});
+    return this.productService.list(options).pipe(tap(({count, rows}) => patchState({
+      products: rows,
+      total: count,
+      loading: false
+    })))
   }
 
   @Action(ProductGet)

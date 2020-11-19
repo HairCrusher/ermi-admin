@@ -4,7 +4,6 @@ import {DashboardState} from "@modules/dashboard/store/dashboard.state";
 import {Observable} from "rxjs";
 import {EsAttrValue, EsProduct} from "@modules/dashboard/types";
 import {faRubleSign} from '@fortawesome/free-solid-svg-icons';
-import {ProductState} from "@modules/products/store/product.state";
 
 @Component({
   selector: 'app-dashboard-product-list',

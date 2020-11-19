@@ -15,9 +15,9 @@ export class ProductAdminService {
   constructor(private http: HttpClient) {
   }
 
-  list(options = {}): Observable<Product[]> {
+  list(options = {}): Observable<{rows: Product[], count: number}> {
     const params = new HttpParams({fromObject: stringifyParams(options)});
-    return this.http.get<Product[]>(this.url, {params});
+    return this.http.get<{rows: Product[], count: number}>(this.url, {params});
   }
 
   get(id: number): Observable<Product> {

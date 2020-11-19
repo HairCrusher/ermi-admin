@@ -10,6 +10,7 @@ const routes: Routes = [
       {path: '', loadChildren: () => import('@modules/dashboard/dashboard.module').then(m => m.DashboardModule)},
       {path: 'products', loadChildren: () => import('@modules/products/products.module').then(m => m.ProductsModule)},
       {path: 'attributes', loadChildren: () => import('@modules/attributes/attributes.module').then(m => m.AttributesModule)},
+      {path: 'images', loadChildren: () => import('@modules/images/images.module').then(m => m.ImagesModule)},
     ]
   },
   {path: '404', component: NotFoundComponent},
