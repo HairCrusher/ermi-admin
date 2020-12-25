@@ -1,0 +1,15 @@
+:host ::ng-deep {
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .ant-card-body {
+    padding: 0 !important;
+  }
+}
+
+td.attr {
+  background-color: #ffffff0d;
+}

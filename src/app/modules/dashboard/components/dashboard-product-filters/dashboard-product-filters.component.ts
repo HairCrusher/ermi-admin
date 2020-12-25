@@ -106,7 +106,10 @@ export class DashboardProductFiltersComponent implements OnInit {
 
   private setForm() {
     this.attributes$
-      .pipe(untilDestroyed(this))
+      .pipe(
+        untilDestroyed(this),
+        map(x => x.filter(a => a.aggregatable))
+      )
       .subscribe((attrs) => {
         const form = this.fb.group({});
         for (const attr of attrs) {
