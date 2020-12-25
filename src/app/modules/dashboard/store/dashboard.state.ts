@@ -60,48 +60,48 @@ export class DashboardState {
   searchProducts(
     {patchState}: StateContext<DashboardStateModel>,
     {payload: {data}}: DashboardSearchProducts
-  ){
+  ) {
     patchState({loading: true});
-    return this.productFS.search(data).pipe(tap(resp => {
-      const esFilters = this.parseFilters(resp.aggregations.attrs);
-      if(!data?.filters?.length) {
-        patchState({enableFilters: esFilters});
-      }
-      patchState({
-        products: resp.hits.hits.map(x => x._source),
-        totalProducts: resp.hits.total.value,
-        loading: false,
-        filters: esFilters
+    return this.productFS.search(data).pipe(
+      tap(({products, total, aggregations}) => {
+        const esFilters = this.parseFilters(aggregations);
+        if (!data?.filters?.length) {
+          patchState({enableFilters: esFilters});
+        }
+        patchState({
+          products,
+          totalProducts: total,
+          loading: false,
+          filters: esFilters
+        })
       })
-    }));
+    );
   }
 
   @Action(UpdateProductsManually)
   updateProductsManually(
     {patchState}: StateContext<DashboardStateModel>,
-  ){
+  ) {
     patchState({loading: true});
     return this.productFS.updateStoreManually().pipe(tap(() => patchState({loading: false})));
   }
 
-  private parseFilters(attrs: { doc_count: number; [p: string]: EsProdAggAttr | number }): EsFilter[] {
+  private parseFilters(attrs: { [p: string]: EsProdAggAttr | number }): EsFilter[] {
 
     const filters: EsFilter[] = Object.entries(attrs).map(([key, value]) => {
-      if(key !== 'doc_count') {
-        try {
-          const slug = key.split('.')[2];
+      try {
+        const slug = key.split('.')[1];
 
-          return {
-            slug,
-            variants: (value as EsProdAggAttr).buckets
-          }
-        } catch (e) {
-          console.log('parseFilters ERROR', e);
+        return {
+          slug,
+          variants: (value as EsProdAggAttr).buckets
         }
+      } catch (e) {
+        console.log('parseFilters ERROR', e);
       }
     });
     filters.shift();
-    if(!filters.length) {
+    if (!filters.length) {
       return [];
     } else {
       return filters;

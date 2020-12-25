@@ -40,3 +40,7 @@ form[nzlayout='vertical'].grid {
     display: none;
   }
 }
+
+.ant-table-tbody > tr .ant-table-wrapper:only-child .ant-table {
+  margin: 0 0 0 0;
+}

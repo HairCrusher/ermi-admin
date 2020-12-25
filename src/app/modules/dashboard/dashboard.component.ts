@@ -16,7 +16,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   @ViewChild(DashboardProductFiltersComponent) filters: DashboardProductFiltersComponent;
   @ViewChild(DashboardProductListComponent) list: DashboardProductListComponent;
 
-  pageSize = 18;
+  pageSize = 20;
 
   constructor(
     private layoutService: LayoutService,
@@ -33,7 +33,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   search() {
     const filters = this.filters.filters;
-    const from = this.list.pageIndex - 1;
+    const from = (this.list.pageIndex - 1) * this.pageSize;
     this.store.dispatch(new DashboardSearchProducts({data: {filters, from, size: this.pageSize}}));
   }
 }

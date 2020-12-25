@@ -4,6 +4,7 @@ import {DashboardState} from "@modules/dashboard/store/dashboard.state";
 import {Observable} from "rxjs";
 import {EsAttrValue, EsProduct} from "@modules/dashboard/types";
 import {faRubleSign} from '@fortawesome/free-solid-svg-icons';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-dashboard-product-list',
@@ -25,14 +26,15 @@ export class DashboardProductListComponent implements OnInit {
   totalProducts$: Observable<number>;
 
   @Select(DashboardState.products)
-  products$: Observable<EsProduct[]>;
+  variants$: Observable<EsProduct[]>;
 
   @Select(DashboardState.loading)
   loading$: Observable<boolean>;
 
   pageIndex = 1;
 
-  constructor() { }
+  constructor(private router: Router) {
+  }
 
   ngOnInit(): void {
   }
@@ -46,5 +48,9 @@ export class DashboardProductListComponent implements OnInit {
     this.onPageChange.emit();
   }
 
-  trackById = (_, item: EsProduct) => item.id;
+  trackById = (_, item ) => item.id;
+
+  productClick(variant: EsProduct) {
+    this.router.navigate(['products', variant.product_id]).then();
+  }
 }

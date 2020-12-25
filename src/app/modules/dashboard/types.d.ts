@@ -2,21 +2,10 @@ import {NzSelectOptionInterface} from "ng-zorro-antd";
 import {Image} from "@modules/images/types";
 
 export interface EsRespProduct {
-  hits: {
-    total: {
-      value: number;
-      relation: string;
-    },
-    max_score: number;
-    hits: {
-      _source: EsProduct
-    }[]
-  },
+  total: number;
+  products: EsProduct[];
   aggregations: {
-    attrs: {
-      doc_count: number;
-      [x: string]: EsProdAggAttr | number;
-    }
+    [x: string]: EsProdAggAttr | number;
   }
 }
 
@@ -32,15 +21,6 @@ export interface Bucket {
 }
 
 export interface EsProduct {
-  id: number;
-  name: string;
-  desc?: string;
-  cats_ids: number[];
-  attr_set_id: number;
-  variants: EsProductVariant[]
-}
-
-export interface EsProductVariant {
   id?: number;
   product_id: number;
   vendor_code: string;
@@ -55,10 +35,15 @@ export interface EsProductVariant {
   images: Image[];
 }
 
+export interface ExpandedTableProduct extends EsProduct {
+  expand: boolean;
+}
+
 export interface EsAttrValue {
   [k: string]: {
     name: string;
     value: string | boolean | number;
+    slug: string;
     type: string;
   };
 }
@@ -118,4 +103,11 @@ export interface WSSearchItem {
   name: string;
   type?: any;
   value: string | number | string[] | number[];
+}
+
+export interface AttrObj {
+  name: string;
+  value: string | boolean | number;
+  slug: string;
+  type: string;
 }

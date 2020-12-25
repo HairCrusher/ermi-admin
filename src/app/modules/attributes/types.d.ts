@@ -6,6 +6,7 @@ export type Attribute = {
   updated_at?: Date;
   type: AttrType;
   type_id: number;
+  aggregatable: boolean;
 };
 
 export type AttrType = {
