@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../../environments/environment";
 import {Observable} from "rxjs";
-import {WSMake, WSModel, WSSearchItem, WSYear} from "@modules/dashboard/types";
+import {SearchAttrsParams, WSMake, WSModel, WSSearchItem, WSYear} from "@modules/dashboard/types";
 
 @Injectable({
   providedIn: 'root'
@@ -36,7 +36,7 @@ export class WheelSizeService {
     return this.http.post<string[]>(`${this.url}/trims`, data)
   }
 
-  searchAttrs(data: { make: string, year: string, model: string, generation: string, trim: string }): Observable<WSSearchItem[][]> {
+  searchAttrs(data: SearchAttrsParams): Observable<WSSearchItem[][]> {
     return this.http.post<WSSearchItem[][]>(`${this.url}/search`, data);
   }
 }

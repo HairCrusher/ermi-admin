@@ -4,6 +4,8 @@ import {Store} from "@ngxs/store";
 import {DashboardSearchProducts} from "@modules/dashboard/store/dashboard.actions";
 import {DashboardProductFiltersComponent} from "@modules/dashboard/components/dashboard-product-filters/dashboard-product-filters.component";
 import {DashboardProductListComponent} from "@modules/dashboard/components/dashboard-product-list/dashboard-product-list.component";
+import {environment} from "../../../environments/environment";
+import {LocalStorageService} from "ngx-localstorage";
 
 @Component({
   selector: 'app-dashboard',
@@ -20,7 +22,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   constructor(
     private layoutService: LayoutService,
-    private store: Store
+    private store: Store,
+    private localStorage: LocalStorageService
   ) { }
 
   ngOnInit(): void {
@@ -34,6 +37,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   search() {
     const filters = this.filters.filters;
     const from = (this.list.pageIndex - 1) * this.pageSize;
-    this.store.dispatch(new DashboardSearchProducts({data: {filters, from, size: this.pageSize}}));
+    const extFilters = this.localStorage.get(environment.wheelSizeCookieName);
+    this.store.dispatch(new DashboardSearchProducts({data: {filters, extFilters, from, size: this.pageSize}}));
   }
 }
