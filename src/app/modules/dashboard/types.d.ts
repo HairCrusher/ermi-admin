@@ -61,6 +61,10 @@ export interface EsProductFilter {
 
 export interface EsProductSearchData {
   filters?: EsProductFilter[];
+  extFilters?: {
+    filters: SearchAttrsParams;
+    data: WSSearchItem[][];
+  };
   size?: number;
   from?: number;
 }
@@ -110,4 +114,12 @@ export interface AttrObj {
   value: string | boolean | number;
   slug: string;
   type: string;
+}
+
+export interface SearchAttrsParams {
+  make: string,
+  year: string,
+  model: string,
+  generation: string,
+  trim: string
 }

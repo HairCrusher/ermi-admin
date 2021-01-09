@@ -6,8 +6,8 @@ import {NzNotificationService, NzSelectOptionInterface} from "ng-zorro-antd";
 import {filter, map, startWith, switchMap, tap} from "rxjs/operators";
 import {WSMake} from "@modules/dashboard/types";
 import {BehaviorSubject, Observable} from "rxjs";
-import {CookieService} from "ngx-cookie-service";
 import {environment} from "../../../../../environments/environment";
+import {LocalStorageService} from "ngx-localstorage";
 
 @UntilDestroy()
 @Component({
@@ -53,16 +53,18 @@ export class WheelSizeFilterComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private WSService: WheelSizeService,
-    private cookie: CookieService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private localStorage: LocalStorageService
   ) {
   }
 
   ngOnInit(): void {
-    const cookie = this.cookie.get(environment.wheelSizeCookieName);
+    const localStorage = this.localStorage.get(environment.wheelSizeCookieName);
 
-    if (cookie) {
-      this.setDataFromCookie(cookie);
+    console.log('localStorage', localStorage);
+
+    if (localStorage) {
+      this.setDataFromLocalStorage(localStorage);
     }
 
     this.setFormWatchers();
@@ -76,10 +78,11 @@ export class WheelSizeFilterComponent implements OnInit {
           if (!data.length || !data[0].length) {
             this.notification.error('Ошибка', 'По данному фильтру отсутствует информация');
           } else {
-            this.cookie.set(environment.wheelSizeCookieName, JSON.stringify({
+            this.localStorage.set(environment.wheelSizeCookieName, {
               filters: this.form.value,
               data
-            }));
+            });
+            console.log('this.localStorage', this.localStorage.get(environment.wheelSizeCookieName));
             this.onSearch.emit();
           }
           this.loading$.next(false);
@@ -96,7 +99,7 @@ export class WheelSizeFilterComponent implements OnInit {
 
   dropModelFilter() {
     this.make.setValue(null);
-    this.cookie.delete(environment.wheelSizeCookieName);
+    this.localStorage.remove(environment.wheelSizeCookieName);
     this.onSearch.emit();
   }
 
@@ -187,8 +190,8 @@ export class WheelSizeFilterComponent implements OnInit {
     });
   }
 
-  private setDataFromCookie(cookie: string) {
-    const {make, year, model, generation, trim} = JSON.parse(cookie).filters;
+  private setDataFromLocalStorage(cookie: {filters: any}) {
+    const {make, year, model, generation, trim} = cookie.filters;
     this.isSettingCookie = true;
     this.WSService.getYears(make).pipe(
       tap(years => {

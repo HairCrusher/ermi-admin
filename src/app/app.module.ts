@@ -17,6 +17,7 @@ import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {StoreModule} from "./store/store.module";
 import { NotFoundComponent } from '@modules/not-found/not-found.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
+import {NgxLocalStorageModule} from "ngx-localstorage";
 
 registerLocaleData(en);
 
@@ -41,6 +42,7 @@ registerLocaleData(en);
     NzButtonModule,
     NzMenuModule,
     NzIconModule,
+    NgxLocalStorageModule.forRoot()
   ],
   providers: [{provide: NZ_I18N, useValue: en_US}],
   bootstrap: [AppComponent]
