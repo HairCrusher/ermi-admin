@@ -1,0 +1,18 @@
+<nz-card>
+  <ng-content select="[nz-checkbox]"></ng-content>
+  <div class="img" [ngStyle]="{'background-image': 'url(' + url + ')'}">
+    <div class="inner">
+      <div class="desc">
+        <ul>
+          <li>ID: <span>{{image.id}}</span></li>
+          <li>Name: <span>{{image.name}}</span></li>
+          <li>Mime type: <span>{{image.mimetype}}</span></li>
+          <li>Size: <span>{{image.size}}</span></li>
+        </ul>
+      </div>
+      <div class="actions">
+        <i nz-icon nzType="eye" nzTheme="outline" (click)="open()"></i>
+      </div>
+    </div>
+  </div>
+</nz-card>

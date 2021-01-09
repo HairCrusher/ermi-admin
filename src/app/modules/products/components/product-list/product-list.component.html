@@ -1,7 +1,12 @@
 <nz-table
   #productTable
-  [nzData]="products"
+  [nzData]="products$ | async"
   [nzLoading]="loading$ | async"
+  [nzTotal]="total$ | async"
+  [nzShowPagination]="true"
+  [nzFrontPagination]="false"
+  [nzPageSize]="pageSize"
+  (nzQueryParams)="queryParamsChange($event)"
 >
   <thead>
     <tr>

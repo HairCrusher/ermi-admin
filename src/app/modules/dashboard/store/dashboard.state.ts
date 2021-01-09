@@ -1,6 +1,6 @@
 import {Action, Selector, State, StateContext} from "@ngxs/store";
 import {DashboardService} from "@modules/dashboard/services/dashboard.service";
-import {DashboardSearchProducts} from "@modules/dashboard/store/dashboard.actions";
+import {DashboardSearchProducts, UpdateProductsManually} from "./dashboard.actions";
 import {tap} from "rxjs/operators";
 import {Injectable} from "@angular/core";
 import {EsFilter, EsProdAggAttr, EsProduct} from "@modules/dashboard/types";
@@ -59,41 +59,49 @@ export class DashboardState {
   @Action(DashboardSearchProducts)
   searchProducts(
     {patchState}: StateContext<DashboardStateModel>,
-    {payload: {filters}}: DashboardSearchProducts
-  ){
+    {payload: {data}}: DashboardSearchProducts
+  ) {
     patchState({loading: true});
-    return this.productFS.search(filters).pipe(tap(resp => {
-      const esFilters = this.parseFilters(resp.aggregations.attrs);
-      if(!filters?.filters?.length) {
-        patchState({enableFilters: esFilters});
-      }
-      patchState({
-        products: resp.hits.hits.map(x => x._source),
-        totalProducts: resp.hits.total.value,
-        loading: false,
-        filters: esFilters
+    return this.productFS.search(data).pipe(
+      tap(({products, total, aggregations}) => {
+        const esFilters = this.parseFilters(aggregations);
+        if (!data?.filters?.length) {
+          patchState({enableFilters: esFilters});
+        }
+        patchState({
+          products,
+          totalProducts: total,
+          loading: false,
+          filters: esFilters
+        })
       })
-    }));
+    );
   }
 
-  private parseFilters(attrs: { doc_count: number; [p: string]: EsProdAggAttr | number }): EsFilter[] {
+  @Action(UpdateProductsManually)
+  updateProductsManually(
+    {patchState}: StateContext<DashboardStateModel>,
+  ) {
+    patchState({loading: true});
+    return this.productFS.updateStoreManually().pipe(tap(() => patchState({loading: false})));
+  }
+
+  private parseFilters(attrs: { [p: string]: EsProdAggAttr | number }): EsFilter[] {
 
     const filters: EsFilter[] = Object.entries(attrs).map(([key, value]) => {
-      if(key !== 'doc_count') {
-        try {
-          const slug = key.split('.')[2];
+      try {
+        const slug = key.split('.')[1];
 
-          return {
-            slug,
-            variants: (value as EsProdAggAttr).buckets
-          }
-        } catch (e) {
-          console.log('parseFilters ERROR', e);
+        return {
+          slug,
+          variants: (value as EsProdAggAttr).buckets
         }
+      } catch (e) {
+        console.log('parseFilters ERROR', e);
       }
     });
     filters.shift();
-    if(!filters.length) {
+    if (!filters.length) {
       return [];
     } else {
       return filters;

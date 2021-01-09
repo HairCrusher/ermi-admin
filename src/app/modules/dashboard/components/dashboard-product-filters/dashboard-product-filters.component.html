@@ -2,6 +2,9 @@
   <nz-button-group>
     <button nz-button nzType="primary">Search</button>
     <button nz-button nzType="danger" type="button" (click)="dropFilters()">Drop filters</button>
+    <button nz-button nzType="default" type="button" [disabled]="updBtnLoading" (click)="updateProductsManually()">
+      Manually products update
+    </button>
   </nz-button-group>
   <nz-form-item *ngFor="let control of controls">
     <nz-form-label>{{getFilterName(control) | async}}</nz-form-label>

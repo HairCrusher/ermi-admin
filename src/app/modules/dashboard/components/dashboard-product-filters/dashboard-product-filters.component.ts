@@ -1,7 +1,14 @@
 import {Component, OnInit, ChangeDetectionStrategy, Output, EventEmitter, ChangeDetectorRef} from '@angular/core';
-import {Select, Selector} from "@ngxs/store";
+import {Actions, ofActionSuccessful, Select, Selector, Store} from "@ngxs/store";
 import {DashboardState} from "@modules/dashboard/store/dashboard.state";
-import {EsFilter, EsProductSearchFilters, Filter, FilterOption, OptionsMap} from "@modules/dashboard/types";
+import {
+  EsFilter,
+  EsProductFilter,
+  EsProductSearchData,
+  Filter,
+  FilterOption,
+  OptionsMap
+} from "@modules/dashboard/types";
 import {combineLatest, forkJoin, Observable, of} from "rxjs";
 import {AttributeState} from "@modules/attributes/store/attribute.state";
 import {Attribute} from "@modules/attributes/types";
@@ -9,6 +16,7 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 import {UntilDestroy, untilDestroyed} from "@ngneat/until-destroy";
 import {catchError, distinct, distinctUntilChanged, filter, map, startWith} from "rxjs/operators";
 import {NzSelectOptionInterface} from "ng-zorro-antd";
+import {UpdateProductsManually} from "@modules/dashboard/store/dashboard.actions";
 
 @UntilDestroy()
 @Component({
@@ -20,7 +28,7 @@ import {NzSelectOptionInterface} from "ng-zorro-antd";
 export class DashboardProductFiltersComponent implements OnInit {
 
   @Output()
-  onSearch = new EventEmitter<EsProductSearchFilters>();
+  onSearch = new EventEmitter<EsProductSearchData>();
 
   @Select(AttributeState.attributes)
   attributes$: Observable<Attribute[]>;
@@ -34,11 +42,17 @@ export class DashboardProductFiltersComponent implements OnInit {
   form: FormGroup;
   controls: string[];
 
+  filters: EsProductFilter[] = [];
+
   options: OptionsMap = {};
+
+  updBtnLoading = false;
 
   constructor(
     private fb: FormBuilder,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private store: Store,
+    private actions: Actions,
   ) {
   }
 
@@ -48,6 +62,14 @@ export class DashboardProductFiltersComponent implements OnInit {
     // this.form.valueChanges.subscribe(() => this.search());
 
     this.setFilters();
+
+    this.actions.pipe(
+      untilDestroyed(this),
+      ofActionSuccessful(UpdateProductsManually),
+    ).subscribe(() => {
+      this.updBtnLoading = false;
+      setTimeout(() => this.search(), 500);
+    });
   }
 
   getFilterName(slug: string): Observable<string> {
@@ -58,16 +80,14 @@ export class DashboardProductFiltersComponent implements OnInit {
 
   search() {
     const values = this.form.value;
-    const filters: EsProductSearchFilters = {
-      filters: Object.keys(this.form.value).reduce<Filter[]>((arr, key) => {
-        if (values[key]?.length) {
-          arr.push({name: key, value: values[key]})
-        }
-        return arr;
-      }, [])
-    };
+    this.filters = Object.keys(this.form.value).reduce<Filter[]>((arr, key) => {
+      if (values[key]?.length) {
+        arr.push({name: key, value: values[key]})
+      }
+      return arr;
+    }, []);
 
-    this.onSearch.emit(filters);
+    this.onSearch.emit();
   }
 
   getFilterOptions(control: string) {
@@ -79,9 +99,17 @@ export class DashboardProductFiltersComponent implements OnInit {
     this.search();
   }
 
+  updateProductsManually() {
+    this.updBtnLoading = true;
+    this.store.dispatch(new UpdateProductsManually());
+  }
+
   private setForm() {
     this.attributes$
-      .pipe(untilDestroyed(this))
+      .pipe(
+        untilDestroyed(this),
+        map(x => x.filter(a => a.aggregatable))
+      )
       .subscribe((attrs) => {
         const form = this.fb.group({});
         for (const attr of attrs) {

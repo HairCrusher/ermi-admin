@@ -1,8 +1,9 @@
-import {Product, ProductFetchOptions} from "@modules/products/types";
+import {Product} from "@modules/products/types";
+import {FetchOptions} from "../../../types";
 
 export class ProductFetch {
   public static readonly type = '[Product] Fetch products';
-  constructor(public payload: { options: ProductFetchOptions } = {options: {}}) {
+  constructor(public payload: { options: FetchOptions }) {
   }
 }
 

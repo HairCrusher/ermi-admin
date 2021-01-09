@@ -1,21 +1,11 @@
 import {NzSelectOptionInterface} from "ng-zorro-antd";
+import {Image} from "@modules/images/types";
 
 export interface EsRespProduct {
-  hits: {
-    total: {
-      value: number;
-      relation: string;
-    },
-    max_score: number;
-    hits: {
-      _source: EsProduct
-    }[]
-  },
+  total: number;
+  products: EsProduct[];
   aggregations: {
-    attrs: {
-      doc_count: number;
-      [x: string]: EsProdAggAttr | number;
-    }
+    [x: string]: EsProdAggAttr | number;
   }
 }
 
@@ -31,15 +21,6 @@ export interface Bucket {
 }
 
 export interface EsProduct {
-  id: number;
-  name: string;
-  desc?: string;
-  cats_ids: number[];
-  attr_set_id: number;
-  variants: EsProductVariant[]
-}
-
-export interface EsProductVariant {
   id?: number;
   product_id: number;
   vendor_code: string;
@@ -51,12 +32,18 @@ export interface EsProductVariant {
   is_available: boolean;
   is_discount: boolean;
   attrs: EsAttrValue;
+  images: Image[];
+}
+
+export interface ExpandedTableProduct extends EsProduct {
+  expand: boolean;
 }
 
 export interface EsAttrValue {
   [k: string]: {
     name: string;
     value: string | boolean | number;
+    slug: string;
     type: string;
   };
 }
@@ -66,8 +53,14 @@ export interface EsFilter {
   variants: Bucket[]
 }
 
-export interface EsProductSearchFilters {
-  filters?: Filter[];
+export interface EsProductFilter {
+  name: string;
+  type?: any; // TODO add filter type
+  value: string | number | string[] | number[];
+}
+
+export interface EsProductSearchData {
+  filters?: EsProductFilter[];
   size?: number;
   from?: number;
 }
@@ -85,4 +78,36 @@ export interface FilterOption extends NzSelectOptionInterface {
 
 export interface OptionsMap {
   [key: string]: FilterOption[]
+}
+
+// WHEEL-SIZE +++++++++++++++++++++++
+
+export interface WSMake {
+  slug: string;
+  name: string;
+  name_en: string;
+}
+
+export interface WSYear {
+  slug: number;
+  name: number;
+}
+
+export interface WSModel {
+  slug: string;
+  name: string;
+  name_en: string;
+}
+
+export interface WSSearchItem {
+  name: string;
+  type?: any;
+  value: string | number | string[] | number[];
+}
+
+export interface AttrObj {
+  name: string;
+  value: string | boolean | number;
+  slug: string;
+  type: string;
 }

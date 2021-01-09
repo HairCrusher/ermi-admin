@@ -1,0 +1,91 @@
+<nz-row nzGutter="16">
+  <nz-col nzSpan="12">
+    <ul>
+      <li *ngIf="image?.original_uri">
+        <img [src]="image?.original_uri" alt="">
+      </li>
+      <li *ngIf="image?.large_uri">
+        <img [src]="image?.large_uri" alt="">
+      </li>
+      <li *ngIf="image?.medium_uri">
+        <img [src]="image?.medium_uri" alt="">
+      </li>
+      <li *ngIf="image?.small_uri">
+        <img [src]="image?.small_uri" alt="">
+      </li>
+      <li *ngIf="image?.thumbnail_uri">
+        <img [src]="image?.thumbnail_uri" alt="">
+      </li>
+    </ul>
+  </nz-col>
+  <nz-col nzSpan="12">
+    <form nz-form [formGroup]="form" (ngSubmit)="save()" nzLayout="vertical">
+      <nz-form-item>
+        <nz-form-label>ID</nz-form-label>
+        <nz-form-control>
+          <input type="number" nz-input formControlName="id">
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>Name</nz-form-label>
+        <nz-form-control>
+          <input type="text" nz-input formControlName="name">
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>Position</nz-form-label>
+        <nz-form-control>
+          <input type="number" nz-input formControlName="position">
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>original_uri</nz-form-label>
+        <nz-form-control>
+          <input type="text" nz-input formControlName="original_uri">
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>large_uri</nz-form-label>
+        <nz-form-control>
+          <input type="text" nz-input formControlName="large_uri">
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>medium_uri</nz-form-label>
+        <nz-form-control>
+          <input type="text" nz-input formControlName="medium_uri">
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>small_uri</nz-form-label>
+        <nz-form-control>
+          <input type="text" nz-input formControlName="small_uri">
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>thumbnail_uri</nz-form-label>
+        <nz-form-control>
+          <input type="text" nz-input formControlName="thumbnail_uri">
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>mimetype</nz-form-label>
+        <nz-form-control>
+          <input type="text" nz-input formControlName="mimetype">
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>size</nz-form-label>
+        <nz-form-control>
+          <input type="text" nz-input formControlName="size">
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <button nz-button nzType="primary">Save</button>
+          <button nz-button nzType="danger" type="button" (click)="delete()">Delete</button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </nz-col>
+</nz-row>
