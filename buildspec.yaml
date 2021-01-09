@@ -1,23 +1,24 @@
-version: 0.1
+version: 0.2
 
+env:
+  variables:
+    CACHE_CONTROL: "86400"
+    S3_BUCKET: "http://4wheels-admin.s3-website.eu-central-1.amazonaws.com"
+    BUILD_FOLDER: "dist"
 phases:
   install:
+    runtime-versions:
+      nodejs: 10
     commands:
-      - echo installing nodejs...
-      - curl -sL https://deb.nodesource.com/setup_12.x | bash -
-      - apt-get install -y nodejs
-  pre_build:
-    commands:
-      - echo installing dependencies...
-      - npm i -g @angular/cli
+      - echo Installing source NPM dependencies...
       - npm install
+      - npm install -g @angular/cli
   build:
     commands:
-      # - echo testing...
-      - echo building...
+      - echo Build started
       - npm run build:prod
 artifacts:
   files:
-    - "**/*"
+    - '**/*'
+  base-directory: 'dist*'
   discard-paths: no
-  base-directory: dist/ermi-admin
