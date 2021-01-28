@@ -41,7 +41,7 @@ export class DashboardProductCardComponent implements OnInit, OnChanges {
     const boltsCount = this.product.attrs['bolts-count'].value;
 
     const dia = this.product.attrs.dia.value;
-    const et = this.product.attrs.dia.value;
+    const et = this.product.attrs.et?.value;
 
     const color = this.product.attrs.color.value;
 
