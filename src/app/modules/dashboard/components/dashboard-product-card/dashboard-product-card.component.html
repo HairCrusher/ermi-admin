@@ -1,9 +1,30 @@
-<nz-card [nzCover]="coverTemplate" [nzHoverable]="true">
-  <p class="title">{{title}}</p>
+<nz-card [nzHoverable]="true">
+  <p class="title">{{product.name}}</p>
+  <nz-row>
+    <nz-col nzSpan="12">
+      <div class="image"
+           [ngStyle]="{
+              backgroundImage: 'url(' + (image || 'https://place-hold.it/305') + ')'
+           }"
+      ></div>
+    </nz-col>
+    <nz-col nzSpan="12">
+      <nz-table
+        class="attrs-table"
+        [nzData]="attrs"
+        [nzFrontPagination]="false"
+        [nzShowPagination]="false"
+      >
+        <tbody>
+          <tr *ngFor="let attr of attrs">
+            <td>{{attr.name}}</td>
+            <td>{{attr.value}}</td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </nz-col>
+  </nz-row>
   <p class="price">{{product?.price}}
     <fa-icon [icon]="imgs.faRubleSign"></fa-icon>
   </p>
 </nz-card>
-<ng-template #coverTemplate>
-  <img alt="example" [src]="image || 'https://place-hold.it/305'"/>
-</ng-template>

@@ -1,3 +1,19 @@
 p {
   padding: 0 10px;
 }
+
+.image {
+  background-size: cover;
+  background-position: center;
+  &:after {
+    content: '';
+    display: block;
+    padding-top: 100%;
+  }
+}
+
+.attrs-table {
+  td {
+    padding: 0 10px;
+  }
+}

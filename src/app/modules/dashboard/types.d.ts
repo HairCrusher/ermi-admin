@@ -22,6 +22,7 @@ export interface Bucket {
 
 export interface EsProduct {
   id?: number;
+  name: string;
   product_id: number;
   vendor_code: string;
   desc?: string;

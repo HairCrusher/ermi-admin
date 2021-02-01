@@ -7,7 +7,7 @@
 >
   <nz-row [nzGutter]="[16, 16]">
     <nz-col
-      nzSpan="6"
+      nzSpan="12"
       *ngFor="let variant of variants$ | async; trackBy:trackById"
     >
       <app-dashboard-product-card [product]="variant" (click)="productClick(variant)"></app-dashboard-product-card>
