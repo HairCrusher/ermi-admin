@@ -124,3 +124,8 @@ export interface SearchAttrsParams {
   generation: string,
   trim: string
 }
+
+export interface CardAttr {
+  name: string;
+  value: any;
+}
