@@ -61,7 +61,11 @@ export class DashboardProductFiltersComponent implements OnInit {
   ngOnInit(): void {
     this.setForm();
 
-    this.form.valueChanges.subscribe(() => this.isMenuOpen || this.search());
+    this.form.valueChanges.subscribe(() => {
+      if(!this.isMenuOpen) {
+        this.search();
+      }
+    });
 
     this.setFilters();
 
