@@ -21,3 +21,10 @@ p {
 .title, .price {
   font-weight: bold;
 }
+
+.price {
+  input {
+    width: 60px;
+    margin-right: 1em;
+  }
+}

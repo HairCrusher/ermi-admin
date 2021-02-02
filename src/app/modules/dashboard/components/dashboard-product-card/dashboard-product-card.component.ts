@@ -17,6 +17,8 @@ export class DashboardProductCardComponent implements OnInit, OnChanges {
   image: string;
   attrs: CardAttr[];
 
+  itemsCount = 4;
+
   constructor() {
   }
 
