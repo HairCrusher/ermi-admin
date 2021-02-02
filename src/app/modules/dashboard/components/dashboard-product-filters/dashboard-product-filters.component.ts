@@ -48,6 +48,8 @@ export class DashboardProductFiltersComponent implements OnInit {
 
   updBtnLoading = false;
 
+  isMenuOpen = false;
+
   constructor(
     private fb: FormBuilder,
     private cd: ChangeDetectorRef,
@@ -59,7 +61,7 @@ export class DashboardProductFiltersComponent implements OnInit {
   ngOnInit(): void {
     this.setForm();
 
-    // this.form.valueChanges.subscribe(() => this.search());
+    this.form.valueChanges.subscribe(() => this.isMenuOpen || this.search());
 
     this.setFilters();
 
@@ -96,12 +98,6 @@ export class DashboardProductFiltersComponent implements OnInit {
 
   dropFilters() {
     this.form.reset();
-    this.search();
-  }
-
-  updateProductsManually() {
-    this.updBtnLoading = true;
-    this.store.dispatch(new UpdateProductsManually());
   }
 
   private setForm() {
@@ -158,5 +154,12 @@ export class DashboardProductFiltersComponent implements OnInit {
     ).subscribe((options) => {
       this.options = options;
     });
+  }
+
+  close(e: boolean) {
+    this.isMenuOpen = e;
+    if(!e) {
+      this.search();
+    }
   }
 }

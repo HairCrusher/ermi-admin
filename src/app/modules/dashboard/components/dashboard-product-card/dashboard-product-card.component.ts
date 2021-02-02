@@ -36,43 +36,11 @@ export class DashboardProductCardComponent implements OnInit, OnChanges {
 
   private setAttrs() {
     if (this.product) {
-      //TODO add cat check
-      if (true) {
-        let count = 0;
-        let spacing = 0;
-        const attrs = Object.values(this.product.attrs)
-          .reduce<CardAttr[]>((acc, {name, value, slug}) => {
-            if (slug === 'bolts-count') {
-              count = parseInt(value.toString());
-              return acc;
-            }
-            if (slug === 'bolts-spacing') {
-              spacing = parseInt(value.toString());
-              return acc;
-            }
-            if (slug === 'pcd') {
-              return acc;
-            }
-            acc.push({
-              value,
-              name
-            });
-            return acc;
-          }, []);
-
-        if (count && spacing) {
-          attrs.push({
-            name: 'PCD',
-            value: `${count}X${spacing}`
-          })
-        }
-
-        this.attrs = attrs;
-        return;
-      }
-
+      const hiddenAttrs = ['bolts-count', 'bolts-spacing'];
       this.attrs = Object.values(this.product.attrs)
-        .map<CardAttr>(({name, value}) => ({name, value}));
+        .filter(({slug}) => !hiddenAttrs.includes(slug))
+        .map<CardAttr>(({name, value}) => ({name, value}))
+        .sort((a, b) => a.name.localeCompare(b.name));
     }
   }
 }

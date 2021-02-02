@@ -18,7 +18,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   @ViewChild(DashboardProductFiltersComponent) filters: DashboardProductFiltersComponent;
   @ViewChild(DashboardProductListComponent) list: DashboardProductListComponent;
 
-  pageSize = 20;
+  pageSize = 21;
 
   constructor(
     private layoutService: LayoutService,

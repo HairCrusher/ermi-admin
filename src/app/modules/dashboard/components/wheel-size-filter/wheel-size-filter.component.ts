@@ -61,8 +61,6 @@ export class WheelSizeFilterComponent implements OnInit {
   ngOnInit(): void {
     const localStorage = this.localStorage.get(environment.wheelSizeCookieName);
 
-    console.log('localStorage', localStorage);
-
     if (localStorage) {
       this.setDataFromLocalStorage(localStorage);
     }
@@ -82,7 +80,6 @@ export class WheelSizeFilterComponent implements OnInit {
               filters: this.form.value,
               data
             });
-            console.log('this.localStorage', this.localStorage.get(environment.wheelSizeCookieName));
             this.onSearch.emit();
           }
           this.loading$.next(false);
