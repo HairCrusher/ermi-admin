@@ -27,8 +27,8 @@
     </nz-col>
   </nz-row>
   <p class="price">
-    X <input nz-input type="number" [(ngModel)]="itemsCount" (click)="$event.stopPropagation()">
-    {{product.price * itemsCount}}
+    {{product.price}} X <input nz-input type="number" [(ngModel)]="itemsCount" (click)="$event.stopPropagation()">
+    ={{product.price * itemsCount}}
     <fa-icon [icon]="imgs.faRubleSign"></fa-icon>
   </p>
 </nz-card>

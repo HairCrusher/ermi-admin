@@ -68,6 +68,7 @@ export interface EsProductSearchData {
   };
   size?: number;
   from?: number;
+  searchString?: string;
 }
 
 export interface Filter {

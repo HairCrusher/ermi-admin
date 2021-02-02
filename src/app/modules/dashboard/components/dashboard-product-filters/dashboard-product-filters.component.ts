@@ -97,11 +97,7 @@ export class DashboardProductFiltersComponent implements OnInit {
   }
 
   getFilterOptions(control: string) {
-    if(this.options[control]?.length) {
-      return [...this.options[control]].sort((a, b) => b.count - a.count);
-    }
-
-    return [];
+    return this.options[control];
   }
 
   dropFilters() {
@@ -140,7 +136,9 @@ export class DashboardProductFiltersComponent implements OnInit {
           } else {
             return enableFilters.reduce<OptionsMap>((map, item) => {
               map[item.slug] = [...item.variants]
-                .sort((a, b) => parseFloat(a.key.toString()) - parseFloat(b.key.toString()))
+                .sort((a, b) => {
+                  return parseFloat(a.key.toString()) - parseFloat(b.key.toString());
+                })
                 .map<FilterOption>(({key}) => {
                   const currFilter = filters.find(x => x.slug === item.slug)?.variants.find(v => v.key === key);
                   return {

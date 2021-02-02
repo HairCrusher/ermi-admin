@@ -19,10 +19,11 @@ import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import { WheelSizeFilterComponent } from './components/wheel-size-filter/wheel-size-filter.component';
 import { AttrSortPipe } from './pipes/attr-sort.pipe';
 import { DashboardProductCardComponent } from './components/dashboard-product-card/dashboard-product-card.component';
+import { SearchInputComponent } from './components/search-input/search-input.component';
 
 
 @NgModule({
-  declarations: [DashboardComponent, DashboardProductListComponent, DashboardProductFiltersComponent, WheelSizeFilterComponent, AttrSortPipe, DashboardProductCardComponent],
+  declarations: [DashboardComponent, DashboardProductListComponent, DashboardProductFiltersComponent, WheelSizeFilterComponent, AttrSortPipe, DashboardProductCardComponent, SearchInputComponent],
     imports: [
         SharedModule,
         DashboardRoutingModule,
