@@ -31,6 +31,7 @@ export class WheelSizeFilterComponent implements OnInit {
   models$ = new BehaviorSubject<NzSelectOptionInterface[]>([]);
   generations$ = new BehaviorSubject<NzSelectOptionInterface[]>([]);
   trims$ = new BehaviorSubject<NzSelectOptionInterface[]>([]);
+  pairs$ = new BehaviorSubject<NzSelectOptionInterface[]>([]);
 
   form = this.fb.group({
     make: [null, Validators.required],
@@ -38,6 +39,7 @@ export class WheelSizeFilterComponent implements OnInit {
     model: [{value: null, disabled: true}, Validators.required],
     generation: [{value: null, disabled: true}, Validators.required],
     trim: [{value: null, disabled: true}, Validators.required],
+    pair: [{value: null, disabled: true}, Validators.required]
   });
 
   private make = this.form.get('make');
@@ -45,6 +47,7 @@ export class WheelSizeFilterComponent implements OnInit {
   private model = this.form.get('model');
   private generation = this.form.get('generation');
   private trim = this.form.get('trim');
+  private pair = this.form.get('pair');
 
   loading$ = new BehaviorSubject(false);
 
@@ -61,8 +64,6 @@ export class WheelSizeFilterComponent implements OnInit {
   ngOnInit(): void {
     const localStorage = this.localStorage.get(environment.wheelSizeCookieName);
 
-    console.log('localStorage', localStorage);
-
     if (localStorage) {
       this.setDataFromLocalStorage(localStorage);
     }
@@ -71,30 +72,12 @@ export class WheelSizeFilterComponent implements OnInit {
   }
 
   search() {
-    if (this.form.valid) {
-      this.loading$.next(true);
-      this.WSService.searchAttrs(this.form.value).subscribe(
-        data => {
-          if (!data.length || !data[0].length) {
-            this.notification.error('Ошибка', 'По данному фильтру отсутствует информация');
-          } else {
-            this.localStorage.set(environment.wheelSizeCookieName, {
-              filters: this.form.value,
-              data
-            });
-            console.log('this.localStorage', this.localStorage.get(environment.wheelSizeCookieName));
-            this.onSearch.emit();
-          }
-          this.loading$.next(false);
-        },
-        error => {
-          console.log('ERROR', error);
-          this.loading$.next(false);
-        });
-    } else {
-      console.log('ERROR: form not valid', this.form.value);
-      this.loading$.next(false);
-    }
+    const data = JSON.parse(this.pair.value);
+    this.localStorage.set(environment.wheelSizeCookieName, {
+      filters: this.form.value,
+      data
+    });
+    this.onSearch.emit();
   }
 
   dropModelFilter() {
@@ -188,10 +171,36 @@ export class WheelSizeFilterComponent implements OnInit {
       this.trim.enable();
       this.loading$.next(false);
     });
+
+    this.trim.valueChanges.pipe(
+      untilDestroyed(this),
+      filter(() => !this.isSettingCookie),
+      tap(() => {
+        this.pair.setValue(null);
+        this.pair.disable();
+        this.pairs$.next([]);
+      }),
+      filter(val => !!val),
+      tap(() => this.loading$.next(true)),
+      switchMap(trim => this.WSService.searchAttrs({
+        make: this.make.value,
+        year: this.year.value,
+        model: this.model.value,
+        generation: this.generation.value,
+        trim
+      }))
+    ).subscribe((pairs) => {
+      this.pairs$.next(pairs.map(pair => ({
+        value: JSON.stringify(pair.esFilters),
+        label: `D${pair.diameter} W${pair.width} ET${pair.et} ${pair.boltsCount}x${pair.boltsSpacing}`
+      })));
+      this.pair.enable();
+      this.loading$.next(false);
+    });
   }
 
-  private setDataFromLocalStorage(cookie: {filters: any}) {
-    const {make, year, model, generation, trim} = cookie.filters;
+  private setDataFromLocalStorage(cookie: { filters: any }) {
+    const {make, year, model, generation, trim, pair} = cookie.filters;
     this.isSettingCookie = true;
     this.WSService.getYears(make).pipe(
       tap(years => {
@@ -225,13 +234,27 @@ export class WheelSizeFilterComponent implements OnInit {
         make,
         model,
         generation
+      })),
+      tap(trims => {
+        this.trims$.next(trims.map(trim =>
+          ({label: trim, value: trim})));
+        this.trim.enable();
+      }),
+      switchMap(() => this.WSService.searchAttrs({
+        year,
+        make,
+        model,
+        generation,
+        trim
       }))
-    ).subscribe((trims) => {
-      this.trims$.next(trims.map(trim =>
-        ({label: trim, value: trim})));
-      this.trim.enable();
+    ).subscribe((pairs) => {
+      this.pairs$.next(pairs.map(p => ({
+        value: JSON.stringify(p.esFilters),
+        label: `D${p.diameter} W${p.width} ET${p.et} ${p.boltsCount}x${p.boltsSpacing}`
+      })));
+      this.pair.enable();
 
-      this.form.patchValue({make, year, model, generation, trim});
+      this.form.patchValue({make, year, model, generation, trim, pair});
       this.isSettingCookie = false;
       this.loading$.next(false);
     });

@@ -22,6 +22,7 @@ export interface Bucket {
 
 export interface EsProduct {
   id?: number;
+  name: string;
   product_id: number;
   vendor_code: string;
   desc?: string;
@@ -67,6 +68,7 @@ export interface EsProductSearchData {
   };
   size?: number;
   from?: number;
+  searchString?: string;
 }
 
 export interface Filter {
@@ -103,6 +105,15 @@ export interface WSModel {
   name_en: string;
 }
 
+export interface ParamsPair {
+  diameter: number;
+  width: number;
+  et: number;
+  boltsCount: number;
+  boltsSpacing: number;
+  esFilters: WSSearchItem[][];
+}
+
 export interface WSSearchItem {
   name: string;
   type?: any;
@@ -122,4 +133,9 @@ export interface SearchAttrsParams {
   model: string,
   generation: string,
   trim: string
+}
+
+export interface CardAttr {
+  name: string;
+  value: any;
 }

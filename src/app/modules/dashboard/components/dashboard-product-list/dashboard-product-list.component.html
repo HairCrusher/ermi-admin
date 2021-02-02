@@ -1,4 +1,4 @@
-<p nz-typography nzType="warning">{{totalProducts$ | async}} items found</p>
+<p nz-typography nzType="secondary">Total {{ totalProducts$ | async }} items</p>
 <nz-list
   [nzLoading]="loading$ | async"
   [nzDataSource]="variants$ | async"
@@ -7,7 +7,7 @@
 >
   <nz-row [nzGutter]="[16, 16]">
     <nz-col
-      nzSpan="6"
+      nzSpan="8"
       *ngFor="let variant of variants$ | async; trackBy:trackById"
     >
       <app-dashboard-product-card [product]="variant" (click)="productClick(variant)"></app-dashboard-product-card>
@@ -15,9 +15,11 @@
   </nz-row>
   <nz-list-pagination>
     <nz-pagination
+      [nzShowTotal]="totalTemplate"
       [nzPageSize]="pageSize"
       (nzPageIndexChange)="pageChange($event)"
       [nzTotal]="totalProducts$ | async"
     ></nz-pagination>
   </nz-list-pagination>
+  <ng-template #totalTemplate let-total> Total {{ total }} items </ng-template>
 </nz-list>

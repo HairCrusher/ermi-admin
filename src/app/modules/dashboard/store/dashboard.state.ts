@@ -100,7 +100,6 @@ export class DashboardState {
         console.log('parseFilters ERROR', e);
       }
     });
-    filters.shift();
     if (!filters.length) {
       return [];
     } else {
