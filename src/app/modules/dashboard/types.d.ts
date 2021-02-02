@@ -105,6 +105,15 @@ export interface WSModel {
   name_en: string;
 }
 
+export interface ParamsPair {
+  diameter: number;
+  width: number;
+  et: number;
+  boltsCount: number;
+  boltsSpacing: number;
+  esFilters: WSSearchItem[][];
+}
+
 export interface WSSearchItem {
   name: string;
   type?: any;

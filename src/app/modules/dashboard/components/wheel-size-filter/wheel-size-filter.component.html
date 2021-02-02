@@ -50,6 +50,16 @@
     </nz-form-control>
   </nz-form-item>
   <nz-form-item>
+    <nz-form-label>Pair</nz-form-label>
+    <nz-form-control>
+      <nz-select
+        formControlName="pair"
+        [nzOptions]="pairs$ | async"
+        nzShowSearch
+      ></nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
     <nz-form-control>
       <button
         nz-button
