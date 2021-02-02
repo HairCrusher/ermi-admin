@@ -93,7 +93,11 @@ export class DashboardProductFiltersComponent implements OnInit {
   }
 
   getFilterOptions(control: string) {
-    return this.options[control];
+    if(this.options[control]?.length) {
+      return [...this.options[control]].sort((a, b) => b.count - a.count);
+    }
+
+    return [];
   }
 
   dropFilters() {
