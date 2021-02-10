@@ -147,7 +147,9 @@ export class DashboardProductFiltersComponent implements OnInit {
                     count: currFilter?.doc_count || 0,
                     disabled: !currFilter
                   }
-                });
+                }).sort((a, b) =>
+                  (a.disabled === b.disabled) ? 0 : a.disabled ? 1 : -1
+                );
               return map;
             }, {});
           }
