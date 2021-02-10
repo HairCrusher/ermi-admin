@@ -2,6 +2,12 @@
   <nz-button-group>
     <button nz-button nzType="danger" type="button" (click)="dropFilters()">Drop filters</button>
   </nz-button-group>
+  <nz-form-item>
+    <nz-form-label>In stock >= 4</nz-form-label>
+    <nz-form-control>
+      <nz-switch (ngModelChange)="inStockChange($event)" ngModel [ngModelOptions]="{standalone: true}"></nz-switch>
+    </nz-form-control>
+  </nz-form-item>
   <nz-form-item *ngFor="let control of controls">
     <nz-form-label>{{getFilterName(control) | async}}</nz-form-label>
     <nz-form-control>

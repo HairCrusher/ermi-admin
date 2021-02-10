@@ -1,21 +1,27 @@
-import {Component, OnInit, ChangeDetectionStrategy, Output, EventEmitter, ChangeDetectorRef} from '@angular/core';
-import {Actions, ofActionSuccessful, Select, Selector, Store} from "@ngxs/store";
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  Output,
+  EventEmitter,
+  ChangeDetectorRef,
+  OnChanges, SimpleChanges
+} from '@angular/core';
+import {Actions, ofActionSuccessful, Select, Store} from "@ngxs/store";
 import {DashboardState} from "@modules/dashboard/store/dashboard.state";
 import {
   EsFilter,
   EsProductFilter,
   EsProductSearchData,
-  Filter,
   FilterOption,
   OptionsMap
 } from "@modules/dashboard/types";
-import {combineLatest, forkJoin, Observable, of} from "rxjs";
+import {combineLatest, Observable, of} from "rxjs";
 import {AttributeState} from "@modules/attributes/store/attribute.state";
 import {Attribute} from "@modules/attributes/types";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {UntilDestroy, untilDestroyed} from "@ngneat/until-destroy";
-import {catchError, distinct, distinctUntilChanged, filter, map, startWith} from "rxjs/operators";
-import {NzSelectOptionInterface} from "ng-zorro-antd";
+import {catchError, map} from "rxjs/operators";
 import {UpdateProductsManually} from "@modules/dashboard/store/dashboard.actions";
 
 @UntilDestroy()
@@ -25,7 +31,7 @@ import {UpdateProductsManually} from "@modules/dashboard/store/dashboard.actions
   styleUrls: ['./dashboard-product-filters.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DashboardProductFiltersComponent implements OnInit {
+export class DashboardProductFiltersComponent implements OnInit, OnChanges {
 
   @Output()
   onSearch = new EventEmitter<EsProductSearchData>();
@@ -43,6 +49,8 @@ export class DashboardProductFiltersComponent implements OnInit {
   controls: string[];
 
   filters: EsProductFilter[] = [];
+
+  qtyGreaterThan4 = false;
 
   options: OptionsMap = {};
 
@@ -62,7 +70,7 @@ export class DashboardProductFiltersComponent implements OnInit {
     this.setForm();
 
     this.form.valueChanges.subscribe(() => {
-      if(!this.isMenuOpen) {
+      if (!this.isMenuOpen) {
         this.search();
       }
     });
@@ -78,6 +86,10 @@ export class DashboardProductFiltersComponent implements OnInit {
     });
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    console.log('changes', changes);
+  }
+
   getFilterName(slug: string): Observable<string> {
     return this.attributes$.pipe(
       map(x => x.find(f => f.slug === slug)?.name)
@@ -86,12 +98,15 @@ export class DashboardProductFiltersComponent implements OnInit {
 
   search() {
     const values = this.form.value;
-    this.filters = Object.keys(this.form.value).reduce<Filter[]>((arr, key) => {
+    this.filters = Object.keys(this.form.value).reduce<EsProductFilter[]>((arr, key) => {
       if (values[key]?.length) {
-        arr.push({name: key, value: values[key]})
+        arr.push({name: key, value: values[key], type: 'attr'})
       }
       return arr;
     }, []);
+    if (this.qtyGreaterThan4) {
+      this.filters.push({name: 'in_stock_qty', type: 'prop', value: {gt: 4}})
+    }
 
     this.onSearch.emit();
   }
@@ -166,8 +181,13 @@ export class DashboardProductFiltersComponent implements OnInit {
 
   close(e: boolean) {
     this.isMenuOpen = e;
-    if(!e) {
+    if (!e) {
       this.search();
     }
+  }
+
+  inStockChange(val: any) {
+    this.qtyGreaterThan4 = val;
+    this.search();
   }
 }

@@ -56,8 +56,19 @@ export interface EsFilter {
 
 export interface EsProductFilter {
   name: string;
-  type?: any; // TODO add filter type
-  value: string | number | string[] | number[];
+  type: EsProductFilterType;
+  value: EsProductFilterValue;
+}
+
+export type EsProductFilterType = 'attr' | 'prop';
+
+export type EsProductFilterValue = string | string[] | number | number[] | RangeFilter;
+
+export interface RangeFilter {
+  gt?: number;
+  gte?: number;
+  lt?: number;
+  lte?: number;
 }
 
 export interface EsProductSearchData {
@@ -70,13 +81,6 @@ export interface EsProductSearchData {
   from?: number;
   searchString?: string;
 }
-
-export interface Filter {
-  name: string;
-  type?: any; // TODO add filter type
-  value: string | number | string[] | number[];
-}
-
 
 export interface FilterOption extends NzSelectOptionInterface {
   count: number;
