@@ -24,6 +24,8 @@ import {UntilDestroy, untilDestroyed} from "@ngneat/until-destroy";
 import {catchError, map} from "rxjs/operators";
 import {UpdateProductsManually} from "@modules/dashboard/store/dashboard.actions";
 
+const ETSlug = 'et';
+
 @UntilDestroy()
 @Component({
   selector: 'app-dashboard-product-filters',
@@ -51,6 +53,7 @@ export class DashboardProductFiltersComponent implements OnInit, OnChanges {
   filters: EsProductFilter[] = [];
 
   qtyGreaterThan4 = false;
+  ETRange = false;
 
   options: OptionsMap = {};
 
@@ -93,7 +96,7 @@ export class DashboardProductFiltersComponent implements OnInit, OnChanges {
   getFilterName(slug: string): Observable<string> {
     return this.attributes$.pipe(
       map(x => x.find(f => f.slug === slug)?.name)
-    )
+    );
   }
 
   search() {
@@ -104,9 +107,8 @@ export class DashboardProductFiltersComponent implements OnInit, OnChanges {
       }
       return arr;
     }, []);
-    if (this.qtyGreaterThan4) {
-      this.filters.push({name: 'in_stock_qty', type: 'prop', value: {gt: 4}})
-    }
+
+    this.additionalFilters();
 
     this.onSearch.emit();
   }
@@ -117,6 +119,10 @@ export class DashboardProductFiltersComponent implements OnInit, OnChanges {
 
   dropFilters() {
     this.form.reset();
+  }
+
+  isET(name: string): boolean {
+    return name === ETSlug;
   }
 
   private setForm() {
@@ -186,8 +192,30 @@ export class DashboardProductFiltersComponent implements OnInit, OnChanges {
     }
   }
 
-  inStockChange(val: any) {
+  inStockChange(val: boolean) {
     this.qtyGreaterThan4 = val;
     this.search();
+  }
+
+  ETRangeChange(val: boolean) {
+    this.ETRange = val;
+    this.search();
+  }
+
+  private additionalFilters() {
+    if (this.qtyGreaterThan4) {
+      this.filters.push({name: 'in_stock_qty', type: 'prop', value: {gte: 4}})
+    }
+
+    if(this.ETRange) {
+      const ETAttr = this.filters.find(x => this.isET(x.name));
+      if(ETAttr) {
+        const rangeValues: EsProductFilter[] = (ETAttr.value as number[])
+          .map(x => {
+            return {name: ETSlug, type: 'attr', value: {gte: x-5, lte: x+5}}
+          });
+        this.filters.push(...rangeValues);
+      }
+    }
   }
 }

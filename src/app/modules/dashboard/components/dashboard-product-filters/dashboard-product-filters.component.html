@@ -10,7 +10,9 @@
   </nz-form-item>
   <nz-form-item *ngFor="let control of controls">
     <nz-form-label>{{getFilterName(control) | async}}</nz-form-label>
-    <nz-form-control>
+    <nz-form-control
+      [nzExtra]="isET(control) ? ETRange : null"
+    >
       <nz-select
         [formControlName]="control"
         nzMode="multiple"
@@ -31,3 +33,10 @@
     </nz-form-control>
   </nz-form-item>
 </form>
+
+<ng-template #ETRange>
+  <nz-row nzJustify="space-between">
+    <span>+/-5</span>
+    <nz-switch (ngModelChange)="ETRangeChange($event)" ngModel [ngModelOptions]="{standalone: true}"></nz-switch>
+  </nz-row>
+</ng-template>
