@@ -1,5 +1,6 @@
 p {
   padding: 0 10px;
+  margin-bottom: 0;
 }
 
 .image {
@@ -12,9 +13,10 @@ p {
   }
 }
 
-.attrs-table {
+nz-table {
   td {
-    padding: 0 10px;
+    padding: 0 10px !important;
+    width: 100%;
   }
 }
 
@@ -26,4 +28,9 @@ p {
   input {
     width: 60px;
   }
+}
+
+.bottom-row {
+  margin-top: 1em;
+  margin-bottom: 10px;
 }

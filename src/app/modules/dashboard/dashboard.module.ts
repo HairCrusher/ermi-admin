@@ -5,13 +5,13 @@ import {SharedModule} from "@modules/shared/shared.module";
 import {DashboardProductListComponent} from './components/dashboard-product-list/dashboard-product-list.component';
 import {DashboardProductFiltersComponent} from './components/dashboard-product-filters/dashboard-product-filters.component';
 import {
-    NzBadgeModule,
-    NzButtonModule,
-    NzCardModule, NzFormModule,
-    NzGridModule, NzInputModule,
-    NzListModule, NzPaginationModule, NzSelectModule,
-    NzTableModule,
-    NzTypographyModule
+  NzBadgeModule,
+  NzButtonModule,
+  NzCardModule, NzCheckboxModule, NzFormModule,
+  NzGridModule, NzInputModule,
+  NzListModule, NzPaginationModule, NzSelectModule, NzSwitchModule,
+  NzTableModule,
+  NzTypographyModule
 } from "ng-zorro-antd";
 import {NgxsModule} from "@ngxs/store";
 import {DashboardState} from "@modules/dashboard/store/dashboard.state";
@@ -24,23 +24,25 @@ import { SearchInputComponent } from './components/search-input/search-input.com
 
 @NgModule({
   declarations: [DashboardComponent, DashboardProductListComponent, DashboardProductFiltersComponent, WheelSizeFilterComponent, AttrSortPipe, DashboardProductCardComponent, SearchInputComponent],
-    imports: [
-        SharedModule,
-        DashboardRoutingModule,
-        NgxsModule.forFeature([DashboardState]),
-        FontAwesomeModule,
-        NzButtonModule,
-        NzTableModule,
-        NzListModule,
-        NzGridModule,
-        NzCardModule,
-        NzTypographyModule,
-        NzFormModule,
-        NzSelectModule,
-        NzBadgeModule,
-        NzPaginationModule,
-        NzInputModule
-    ]
+  imports: [
+    SharedModule,
+    DashboardRoutingModule,
+    NgxsModule.forFeature([DashboardState]),
+    FontAwesomeModule,
+    NzButtonModule,
+    NzTableModule,
+    NzListModule,
+    NzGridModule,
+    NzCardModule,
+    NzTypographyModule,
+    NzFormModule,
+    NzSelectModule,
+    NzBadgeModule,
+    NzPaginationModule,
+    NzInputModule,
+    NzCheckboxModule,
+    NzSwitchModule
+  ]
 })
 export class DashboardModule {
 }

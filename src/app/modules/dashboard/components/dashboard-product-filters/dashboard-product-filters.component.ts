@@ -1,22 +1,30 @@
-import {Component, OnInit, ChangeDetectionStrategy, Output, EventEmitter, ChangeDetectorRef} from '@angular/core';
-import {Actions, ofActionSuccessful, Select, Selector, Store} from "@ngxs/store";
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  Output,
+  EventEmitter,
+  ChangeDetectorRef,
+  OnChanges, SimpleChanges
+} from '@angular/core';
+import {Actions, ofActionSuccessful, Select, Store} from "@ngxs/store";
 import {DashboardState} from "@modules/dashboard/store/dashboard.state";
 import {
   EsFilter,
   EsProductFilter,
   EsProductSearchData,
-  Filter,
   FilterOption,
   OptionsMap
 } from "@modules/dashboard/types";
-import {combineLatest, forkJoin, Observable, of} from "rxjs";
+import {combineLatest, Observable, of} from "rxjs";
 import {AttributeState} from "@modules/attributes/store/attribute.state";
 import {Attribute} from "@modules/attributes/types";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {UntilDestroy, untilDestroyed} from "@ngneat/until-destroy";
-import {catchError, distinct, distinctUntilChanged, filter, map, startWith} from "rxjs/operators";
-import {NzSelectOptionInterface} from "ng-zorro-antd";
+import {catchError, map} from "rxjs/operators";
 import {UpdateProductsManually} from "@modules/dashboard/store/dashboard.actions";
+
+const ETSlug = 'et';
 
 @UntilDestroy()
 @Component({
@@ -25,7 +33,7 @@ import {UpdateProductsManually} from "@modules/dashboard/store/dashboard.actions
   styleUrls: ['./dashboard-product-filters.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DashboardProductFiltersComponent implements OnInit {
+export class DashboardProductFiltersComponent implements OnInit, OnChanges {
 
   @Output()
   onSearch = new EventEmitter<EsProductSearchData>();
@@ -43,6 +51,9 @@ export class DashboardProductFiltersComponent implements OnInit {
   controls: string[];
 
   filters: EsProductFilter[] = [];
+
+  qtyGreaterThan4 = false;
+  ETRange = false;
 
   options: OptionsMap = {};
 
@@ -62,7 +73,7 @@ export class DashboardProductFiltersComponent implements OnInit {
     this.setForm();
 
     this.form.valueChanges.subscribe(() => {
-      if(!this.isMenuOpen) {
+      if (!this.isMenuOpen) {
         this.search();
       }
     });
@@ -78,20 +89,26 @@ export class DashboardProductFiltersComponent implements OnInit {
     });
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    console.log('changes', changes);
+  }
+
   getFilterName(slug: string): Observable<string> {
     return this.attributes$.pipe(
       map(x => x.find(f => f.slug === slug)?.name)
-    )
+    );
   }
 
   search() {
     const values = this.form.value;
-    this.filters = Object.keys(this.form.value).reduce<Filter[]>((arr, key) => {
+    this.filters = Object.keys(this.form.value).reduce<EsProductFilter[]>((arr, key) => {
       if (values[key]?.length) {
-        arr.push({name: key, value: values[key]})
+        arr.push({name: key, value: values[key], type: 'attr'})
       }
       return arr;
     }, []);
+
+    this.additionalFilters();
 
     this.onSearch.emit();
   }
@@ -102,6 +119,10 @@ export class DashboardProductFiltersComponent implements OnInit {
 
   dropFilters() {
     this.form.reset();
+  }
+
+  isET(name: string): boolean {
+    return name === ETSlug;
   }
 
   private setForm() {
@@ -147,7 +168,9 @@ export class DashboardProductFiltersComponent implements OnInit {
                     count: currFilter?.doc_count || 0,
                     disabled: !currFilter
                   }
-                });
+                }).sort((a, b) =>
+                  (a.disabled === b.disabled) ? 0 : a.disabled ? 1 : -1
+                );
               return map;
             }, {});
           }
@@ -164,8 +187,35 @@ export class DashboardProductFiltersComponent implements OnInit {
 
   close(e: boolean) {
     this.isMenuOpen = e;
-    if(!e) {
+    if (!e) {
       this.search();
+    }
+  }
+
+  inStockChange(val: boolean) {
+    this.qtyGreaterThan4 = val;
+    this.search();
+  }
+
+  ETRangeChange(val: boolean) {
+    this.ETRange = val;
+    this.search();
+  }
+
+  private additionalFilters() {
+    if (this.qtyGreaterThan4) {
+      this.filters.push({name: 'in_stock_qty', type: 'prop', value: {gte: 4}})
+    }
+
+    if(this.ETRange) {
+      const ETAttr = this.filters.find(x => this.isET(x.name));
+      if(ETAttr) {
+        const rangeValues: EsProductFilter[] = (ETAttr.value as number[])
+          .map(x => {
+            return {name: ETSlug, type: 'attr', value: {gte: x-5, lte: x+5}}
+          });
+        this.filters.push(...rangeValues);
+      }
     }
   }
 }

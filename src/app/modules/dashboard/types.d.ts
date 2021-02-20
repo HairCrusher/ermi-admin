@@ -36,17 +36,20 @@ export interface EsProduct {
   images: Image[];
 }
 
-export interface ExpandedTableProduct extends EsProduct {
-  expand: boolean;
-}
 
 export interface EsAttrValue {
   [k: string]: {
     name: string;
-    value: string | boolean | number;
+    value: string | boolean | number | EsStock[];
     slug: string;
     type: string;
   };
+}
+
+export interface EsStock {
+  name: string;
+  shippingTime: string;
+  count: number;
 }
 
 export interface EsFilter {
@@ -56,8 +59,19 @@ export interface EsFilter {
 
 export interface EsProductFilter {
   name: string;
-  type?: any; // TODO add filter type
-  value: string | number | string[] | number[];
+  type: EsProductFilterType;
+  value: EsProductFilterValue;
+}
+
+export type EsProductFilterType = 'attr' | 'prop';
+
+export type EsProductFilterValue = string | string[] | number | number[] | RangeFilter;
+
+export interface RangeFilter {
+  gt?: number;
+  gte?: number;
+  lt?: number;
+  lte?: number;
 }
 
 export interface EsProductSearchData {
@@ -70,13 +84,6 @@ export interface EsProductSearchData {
   from?: number;
   searchString?: string;
 }
-
-export interface Filter {
-  name: string;
-  type?: any; // TODO add filter type
-  value: string | number | string[] | number[];
-}
-
 
 export interface FilterOption extends NzSelectOptionInterface {
   count: number;
@@ -122,7 +129,7 @@ export interface WSSearchItem {
 
 export interface AttrObj {
   name: string;
-  value: string | boolean | number;
+  value: string | boolean | number | EsStock[];
   slug: string;
   type: string;
 }

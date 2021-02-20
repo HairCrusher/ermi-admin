@@ -1,9 +1,9 @@
 <nz-row [nzGutter]="[16, 16]">
-  <nz-col nzSpan="18">
+  <nz-col nzSpan="20">
     <app-search-input (onTextChange)="search()"></app-search-input>
     <app-dashboard-product-list (onPageChange)="search()" [pageSize]="pageSize"></app-dashboard-product-list>
   </nz-col>
-  <nz-col nzSpan="6">
+  <nz-col nzSpan="4">
     <app-wheel-size-filter (onSearch)="search()"></app-wheel-size-filter>
     <app-dashboard-product-filters (onSearch)="search()"></app-dashboard-product-filters>
   </nz-col>

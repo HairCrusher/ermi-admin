@@ -1,5 +1,6 @@
 import {Component, OnInit, ChangeDetectionStrategy, Input, Output, EventEmitter} from '@angular/core';
 import {Image} from "@modules/images/types";
+import {NzModalService} from "ng-zorro-antd";
 
 @Component({
   selector: 'app-product-image',
@@ -22,8 +23,17 @@ export class ProductImageComponent implements OnInit {
     return `url("${medium_uri || original_uri}")`;
   }
 
-  constructor() { }
+  constructor(
+    private modalService: NzModalService
+  ) { }
 
   ngOnInit(): void {
+  }
+
+  openModal() {
+    this.modalService.create({
+      nzContent:`<img width="100%" src="${this.image.original_uri}" />`,
+      nzFooter: null
+    })
   }
 }

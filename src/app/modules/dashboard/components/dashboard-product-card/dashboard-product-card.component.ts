@@ -1,5 +1,5 @@
 import {Component, OnInit, ChangeDetectionStrategy, Input, OnChanges, SimpleChanges} from '@angular/core';
-import {CardAttr, EsProduct} from "@modules/dashboard/types";
+import {CardAttr, EsProduct, EsStock} from "@modules/dashboard/types";
 import {faRubleSign} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -16,6 +16,7 @@ export class DashboardProductCardComponent implements OnInit, OnChanges {
 
   image: string;
   attrs: CardAttr[];
+  stock: EsStock[];
 
   itemsCount = 4;
 
@@ -42,7 +43,18 @@ export class DashboardProductCardComponent implements OnInit, OnChanges {
       this.attrs = Object.values(this.product.attrs)
         .filter(({slug}) => !hiddenAttrs.includes(slug))
         .map<CardAttr>(({name, value}) => ({name, value}))
+        .filter((attr) => {
+          if(this.isStockAttr(attr)) {
+            this.stock = attr.value;
+            return false;
+          }
+          return true;
+        })
         .sort((a, b) => a.name.localeCompare(b.name));
     }
+  }
+
+  isStockAttr({name}: CardAttr): boolean {
+    return name === 'Stock';
   }
 }

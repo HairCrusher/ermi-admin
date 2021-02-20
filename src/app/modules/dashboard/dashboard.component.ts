@@ -7,6 +7,8 @@ import {DashboardProductListComponent} from "@modules/dashboard/components/dashb
 import {environment} from "../../../environments/environment";
 import {LocalStorageService} from "ngx-localstorage";
 import {SearchInputComponent} from "@modules/dashboard/components/search-input/search-input.component";
+import {EsProductSearchData} from "@modules/dashboard/types";
+import {isEqual} from 'lodash';
 
 @Component({
   selector: 'app-dashboard',
@@ -19,6 +21,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   @ViewChild(DashboardProductFiltersComponent) filters: DashboardProductFiltersComponent;
   @ViewChild(DashboardProductListComponent) list: DashboardProductListComponent;
   @ViewChild(SearchInputComponent) searchInput: SearchInputComponent;
+
+  private searchData: EsProductSearchData;
 
   pageSize = 21;
 
@@ -42,14 +46,16 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     const from = (this.list.pageIndex - 1) * this.pageSize;
     const extFilters = this.localStorage.get(environment.wheelSizeCookieName);
     const searchString = this.searchInput.searchString;
-    this.store.dispatch(new DashboardSearchProducts({
-      data: {
-        filters,
-        extFilters,
-        from,
-        size: this.pageSize,
-        searchString
-      }
-    }));
+    const data: EsProductSearchData = {
+      filters,
+      extFilters,
+      from,
+      size: this.pageSize,
+      searchString
+    };
+    if (!isEqual(this.searchData, data)) {
+      this.searchData = data;
+      this.store.dispatch(new DashboardSearchProducts({data}));
+    }
   }
 }
