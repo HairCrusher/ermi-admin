@@ -1,4 +1,4 @@
-<div class="image" [ngStyle]="{'background-image': url}">
+<div class="image" [ngStyle]="{'background-image': url}" (dblclick)="openModal()">
   <div class="actions">
     <i nz-icon nzType="delete" nzTheme="outline" (click)="deleteEvent.emit(image)"></i>
   </div>
