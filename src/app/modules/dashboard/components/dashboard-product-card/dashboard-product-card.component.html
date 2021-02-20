@@ -1,5 +1,5 @@
 <nz-card [nzHoverable]="true">
-  <p class="title">{{product.name}} ({{product.in_stock_qty}})</p>
+  <p class="title">{{product.name}}</p>
   <nz-row>
     <nz-col nzSpan="12">
       <div class="image"
@@ -14,6 +14,7 @@
         [nzData]="attrs"
         [nzFrontPagination]="false"
         [nzShowPagination]="false"
+        [nzBordered]="true"
       >
         <thead>
         </thead>
@@ -26,9 +27,35 @@
       </nz-table>
     </nz-col>
   </nz-row>
-  <p class="price">
-    {{product.price}} X <input nz-input type="number" [(ngModel)]="itemsCount" (click)="$event.stopPropagation()">
-    ={{product.price * itemsCount}}
-    <fa-icon [icon]="imgs.faRubleSign"></fa-icon>
-  </p>
+  <nz-row nzAlign="bottom" class="bottom-row">
+    <nz-col nzSpan="12">
+      <p class="price">
+        {{product.price}} X <input nz-input type="number" [(ngModel)]="itemsCount" (click)="$event.stopPropagation()">
+        ={{product.price * itemsCount}}
+        <fa-icon [icon]="imgs.faRubleSign"></fa-icon>
+      </p>
+    </nz-col>
+    <nz-col nzSpan="12">
+      <nz-table
+        [nzData]="stock"
+        [nzFrontPagination]="false"
+        [nzShowPagination]="false"
+      >
+        <thead>
+        </thead>
+        <tbody>
+        <tr *ngFor="let item of stock">
+          <td>{{item.name}}</td>
+          <td>{{item.shippingTime}} дня</td>
+          <td>{{item.count}} шт.</td>
+        </tr>
+        <tr>
+          <td>Всего</td>
+          <td></td>
+          <td><b>{{product.in_stock_qty}}</b></td>
+        </tr>
+        </tbody>
+      </nz-table>
+    </nz-col>
+  </nz-row>
 </nz-card>

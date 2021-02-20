@@ -36,17 +36,20 @@ export interface EsProduct {
   images: Image[];
 }
 
-export interface ExpandedTableProduct extends EsProduct {
-  expand: boolean;
-}
 
 export interface EsAttrValue {
   [k: string]: {
     name: string;
-    value: string | boolean | number;
+    value: string | boolean | number | EsStock[];
     slug: string;
     type: string;
   };
+}
+
+export interface EsStock {
+  name: string;
+  shippingTime: string;
+  count: number;
 }
 
 export interface EsFilter {
@@ -126,7 +129,7 @@ export interface WSSearchItem {
 
 export interface AttrObj {
   name: string;
-  value: string | boolean | number;
+  value: string | boolean | number | EsStock[];
   slug: string;
   type: string;
 }
